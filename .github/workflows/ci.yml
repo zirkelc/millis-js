@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  checks: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+
+      - name: Lint
+        run: biome ci --no-errors-on-unmatched .
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup and Install
+        id: install
+        uses: zirkelc/setup-and-install@v1
+        with:
+          node-version: 20
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+  # Install app: https://github.com/apps/pkg-pr-new
+  preview:
+    name: Preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for pkg-pr-new app
+        id: check-app
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api /installation/repositories | grep -q "pkg-pr-new"; then
+            echo "app_installed=true" >> $GITHUB_OUTPUT
+          else
+            echo "app_installed=false" >> $GITHUB_OUTPUT
+            echo "::notice::Skipping preview job - pkg-pr-new app is not installed"
+            exit 1
+          fi
+
+      - name: Setup and Install
+        id: install
+        uses: zirkelc/setup-and-install@v1
+        with:
+          node-version: 20
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish Preview
+        run: npx pkg-pr-new publish
