@@ -1,6 +1,6 @@
 {
-  "name": "single-package-typescript",
-  "version": "1.0.0",
+  "name": "datetime.js",
+  "version": "0.0.0",
   "description": "",
   "packageManager": "pnpm@9.0.0",
   "main": "dist/index.cjs",
@@ -17,14 +17,27 @@
     "prepublishOnly": "pnpm build && pnpm typecheck",
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "test": "vitest",
-    "lint:check": "biome check .",
-    "lint:fix": "biome check . --write",
+    "lint": "biome check . --write",
     "prepare": "husky",
     "typecheck": "attw --pack ."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "datetime",
+    "date",
+    "time",
+    "utc",
+    "iso",
+    "duration",
+    "timespan",
+    "diff",
+    "milliseconds",
+    "seconds",
+    "minutes",
+    "hours",
+    "days"
+  ],
+  "author": "Chris Cook",
+  "license": "MIT",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.0",
     "@biomejs/biome": "^1.9.4",
@@ -38,6 +51,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/YOUR_REPO_NAME"
+    "url": "https://github.com/zirkelc/datetime.js"
   }
 }

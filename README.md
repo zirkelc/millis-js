@@ -1,90 +1,252 @@
-# TypeScript Single Package Project Template
+# DateTime.js
 
-This template provides an opinionated setup for a single package TypeScript project.
+A tiny and dependency-free library for date and time manipulation in JavaScript. It provides an elegant, chainable API with immutable operations, making it easy to perform complex date arithmetic while avoiding common pitfalls.
 
-## 🚀 Features
+## Key Features
 
-- 📦 [PNPM](https://pnpm.io/) for efficient package management
-- 🧹 [Biome](https://biomejs.dev/) for linting and formatting
-- 🧪 [Vitest](https://vitest.dev/) for fast, modern testing
-- 🏗️ [tsup](https://tsup.egoist.dev/) for TypeScript building and bundling
-- 🏃‍♂️ [tsx](https://tsx.is/) for running TypeScript files
-- 🐶 [Husky](https://github.com/typicode/husky) for Git hooks
-- 🔄 [GitHub Actions](.github/workflows/ci.yml) for continuous integration
-- 🐞 [VSCode](.vscode/) debug configuration and editor settings
-- 🔧 [@total-typescript/tsconfig](https://github.com/total-typescript/tsconfig) for TypeScript configuration
-- 🎯 [Are The Types Wrong?](https://github.com/arethetypeswrong/arethetypeswrong.github.io) for type validation
-- 🚀 [pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new) for preview releases
+- 🔄 **Immutable operations** - All operations return new instances, preventing accidental state mutations
+- 🔗 **Chainable API** - Fluent interface for composing multiple operations
+- 📅 **UTC-based** - Works with UTC milliseconds internally, avoiding timezone complexities
+- ⚡ **Zero dependencies** - Tiny footprint, built on native JavaScript Date
+- 🎯 **Type-safe** - Written in TypeScript with full type definitions
 
-## 📋 Details
+## Design
 
-### Package
+The library is built around two main concepts:
 
-The [`package.json`](package.json) is configured as ESM (`"type": "module"`), but supports dual publishing with both ESM and CJS module formats.
+1. **DateTime**: An immutable wrapper around a timestamp (milliseconds since Unix Epoch). Each operation returns a new DateTime instance, making it safe and predictable to work with.
 
-### Biome
+2. **Duration**: Represents a length of time, supporting both:
+    - Absolute durations (days, hours, minutes, seconds, milliseconds)
+    - Relative durations (months, years) which handle calendar complexities
 
-[`biome.jsonc`](biome.jsonc) contains the default [Biome configuration](https://biomejs.dev/reference/configuration/) with minimal formatting adjustments. It uses the formatter settings from the [`.editorconfig`](.editorconfig) file.
+## API
 
-### Vitest
+This library provides two classes: `DateTime` and `Duration`.
 
-An empty Vitest config is provided in [`vitest.config.ts`](vitest.config.ts).
+### `DateTime` class
 
-### Build and Run
+A `DateTime` object is created by a factory method, followed by a chain of operations and concluded by a terminal method.
 
-- `tsup` builds `./src/index.ts`, outputting both ESM and CJS formats to the `dist` folder.
-- `tsx` compiles and runs TypeScript files on-the-fly.
+#### Factory methods
 
-### Git Hooks
+- `DateTime.now(): DateTime`
+  ```ts
+  // Get current time
+  DateTime.now(); // 2024-01-01T00:00:00.000Z
+  ```
 
-[Husky](https://github.com/typicode/husky) runs the [.husky/pre-commit](.husky/pre-commit) hook to lint staged files.
+- `DateTime.from(dateTime: DateTimeLike): DateTime`
+  ```ts
+  // From milliseconds
+  DateTime.from(1704067200000); // 2024-01-01T00:00:00.000Z
 
-### Continuous Integration
+  // From ISO string
+  DateTime.from('2024-01-01T00:00:00.000Z');
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) defines a GitHub Actions workflow to run linting and tests on commits and pull requests.
+  // From Date object
+  DateTime.from(new Date());
 
-### Preview Releases
+  // From another DateTime object
+  DateTime.from(DateTime.now());
+  ```
 
-[pkg.pr.new](https://github.com/stackblitz-labs/pkg.pr.new) will automatically generate preview releases for every push and pull request. This allows you to test changes before publishing to npm.
+#### Arithmetic operations
 
-Must install GitHub App: [pkg.pr.new](https://github.com/apps/pkg-pr-new)
+- `plus(duration: AbsoluteDuration & RelativeDuration): DateTime`
+  ```ts
+  // Add absolute durations (days and smaller units)
+  DateTime.from('2024-01-01T00:00:00.000Z')
+    .plus({ days: 1, hours: 2, minutes: 30 })
+    // 2024-01-02T02:30:00.000Z
 
-### VSCode Integration
+  // Add relative durations (months/years)
+  DateTime.from('2024-01-31T00:00:00.000Z')
+    .plus({ months: 1 })
+    // 2024-02-29T00:00:00.000Z (handles leap years)
 
-#### Debugging
+  // Combine absolute and relative durations
+  DateTime.from('2024-01-31T00:00:00.000Z')
+    .plus({ months: 1, days: 1, hours: 2 })
+    // 2024-03-01T02:00:00.000Z
+  ```
 
-[`.vscode/launch.json`](.vscode/launch.json) provides VSCode launch configurations:
-- `Debug (tsx)`: Run and debug TypeScript files
-- `Test (vitest)`: Debug tests
+- `minus(duration: AbsoluteDuration & RelativeDuration): DateTime`
+  ```ts
+  // Subtract absolute durations
+  DateTime.from('2024-01-01T00:00:00.000Z')
+    .minus({ days: 1, hours: 2 })
+    // 2023-12-30T22:00:00.000Z
 
-It uses the [JavaScript Debug Terminal](https://code.visualstudio.com/docs/nodejs/nodejs-debugging) to run and debug.
+  // Subtract relative durations
+  DateTime.from('2024-03-31T00:00:00.000Z')
+    .minus({ months: 1 })
+    // 2024-02-29T00:00:00.000Z (handles leap years)
+  ```
 
-#### Editor Settings
+#### Terminal methods
 
-[`.vscode/settings.json`](.vscode/settings.json) configures Biome as the formatter and enables format-on-save.
+- `days()` - Get days since Unix Epoch
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').days() // 19722
+  ```
 
-### EditorConfig
+- `hours()` - Get hours since Unix Epoch
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').hours() // 473328
+  ```
 
-[`.editorconfig`](.editorconfig) ensures consistent coding styles across different editors and IDEs:
+- `minutes()` - Get minutes since Unix Epoch
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').minutes() // 28399680
+  ```
 
-- Uses spaces for indentation (2 spaces)
-- Sets UTF-8 charset
-- Ensures LF line endings
-- Trims trailing whitespace (except in Markdown files)
-- Inserts a final newline in files
+- `seconds()` - Get seconds since Unix Epoch
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').seconds() // 1704067200
+  ```
 
-This configuration complements Biome and helps maintain a consistent code style throughout the project.
+- `millis()` - Get milliseconds since Unix Epoch
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').millis() // 1704067200000
+  ```
 
-### Type Validation
+- `timestamp()` - Get seconds since Unix Epoch (floored)
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.500Z').timestamp() // 1704067200
+  ```
 
-The project includes the `@arethetypeswrong/cli` CLI tool to validate TypeScript types in your package. Run `pnpm typecheck` after building to ensure your package's types are correct and compatible with both ESM and CommonJS environments.
+- `date()` - Get JavaScript Date object
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').date() // Date object
+  ```
 
-## 🚀 Getting Started
+- `iso()` - Get ISO string representation
+  ```ts
+  DateTime.now().iso() // "2024-01-01T00:00:00.000Z"
+  ```
 
-1. Create a new repository [using this template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-2. Run `pnpm install` to install dependencies
-3. Start coding in the `src` directory
-4. Run tests with `pnpm test`
-5. Build your project with `pnpm build`
+- `year()` - Get the year
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').year() // 2024
+  ```
 
-Happy coding! 🎉
+- `dayOfYear()` - Get the day of year (1-365/366)
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').dayOfYear() // 1
+  DateTime.from('2024-12-31T00:00:00.000Z').dayOfYear() // 366 (leap year)
+  ```
+
+- `hourOfDay()` - Get the hour of day (0-23)
+  ```ts
+  DateTime.from('2024-01-01T12:00:00.000Z').hourOfDay() // 12
+  ```
+
+
+### `Duration` class
+
+The `Duration` class represents a length of time. It supports absolute durations (days and smaller units) but not relative durations (months/years).
+
+#### Factory methods
+
+- `Duration.of(duration: AbsoluteDuration)`
+  ```ts
+  Duration.of({ 
+    days: 1,
+    hours: 2,
+    minutes: 30,
+    seconds: 15,
+    millis: 500
+  })
+  ```
+
+- `Duration.days(days: number): Duration`
+  ```ts
+  Duration.days(2)
+  ```
+
+- `Duration.hours(hours: number): Duration`
+  ```ts
+  Duration.hours(3)
+  ```
+
+- `Duration.minutes(minutes: number): Duration`
+  ```ts
+  Duration.minutes(45)
+  ```
+
+- `Duration.seconds(seconds: number): Duration`
+  ```ts
+  Duration.seconds(90)
+  ```
+
+- `Duration.millis(millis: number): Duration`
+  ```ts
+  Duration.millis(1500)
+  ```
+
+- `Duration.diff(start: DateTimeLike, end: DateTimeLike)`
+  ```ts
+  Duration.diff(
+    '2024-01-01T00:00:00.000Z',
+    '2024-01-02T00:00:00.000Z'
+  ) // 24 hours
+  ```
+
+#### Terminal methods
+
+- `days()` - Get duration in days
+  ```ts
+  Duration.hours(25).days() // 1.0416666666666667
+  Duration.hours(25).days({ round: true }) // 1
+  ```
+
+- `hours()` - Get duration in hours
+  ```ts
+  Duration.minutes(150).hours() // 2.5
+  Duration.minutes(150).hours({ round: true }) // 3
+  ```
+
+- `minutes()` - Get duration in minutes
+  ```ts
+  Duration.seconds(150).minutes() // 2.5
+  Duration.seconds(150).minutes({ round: true }) // 3
+  ```
+
+- `seconds()` - Get duration in seconds
+  ```ts
+  Duration.millis(2500).seconds() // 2.5
+  Duration.millis(2500).seconds({ round: true }) // 3
+  ```
+
+- `millis()` - Get duration in milliseconds
+  ```ts
+  Duration.seconds(1.5).millis() // 1500
+  ```
+
+- `iso()` - Get ISO duration string
+  ```ts
+  Duration.of({ days: 1, hours: 2, minutes: 30 }).iso()
+  // "P1DT2H30M"
+  ```
+
+#### Arithmetic operations
+
+- `plus(duration: AbsoluteDuration): Duration`
+  ```ts
+  Duration.hours(2)
+    .plus({ minutes: 30 })
+    // 2.5 hours
+  ```
+
+- `minus(duration: AbsoluteDuration): Duration`
+  ```ts
+  Duration.hours(5)
+    .minus({ hours: 2, minutes: 30 })
+    // 2.5 hours
+  ```
+
+- `abs()` - Get absolute value of duration
+  ```ts
+  Duration.hours(-2).abs() // 2 hours
+  ```
