@@ -1,4 +1,4 @@
-# Instant.js
+# Millis.js
 
 A tiny and dependency-free library for date and time manipulation in JavaScript. It provides an elegant, chainable API with immutable operations, making it easy to perform complex date arithmetic while avoiding common pitfalls.
 
