@@ -1,4 +1,4 @@
-# DateTime.js
+# Instant.js
 
 A tiny and dependency-free library for date and time manipulation in JavaScript. It provides an elegant, chainable API with immutable operations, making it easy to perform complex date arithmetic while avoiding common pitfalls.
 
@@ -10,23 +10,13 @@ A tiny and dependency-free library for date and time manipulation in JavaScript.
 - ⚡ **Zero dependencies** - Tiny footprint, built on native JavaScript Date
 - 🎯 **Type-safe** - Written in TypeScript with full type definitions
 
-## Design
-
-The library is built around two main concepts:
-
-1. **DateTime**: An immutable wrapper around a timestamp (milliseconds since Unix Epoch). Each operation returns a new DateTime instance, making it safe and predictable to work with.
-
-2. **Duration**: Represents a length of time, supporting both:
-    - Absolute durations (days, hours, minutes, seconds, milliseconds)
-    - Relative durations (months, years) which handle calendar complexities
-
 ## API
 
 This library provides two classes: `DateTime` and `Duration`.
 
 ### `DateTime` class
 
-A `DateTime` object is created by a factory method, followed by a chain of operations and concluded by a terminal method.
+The `DateTime` class represents a timestamp and can be manipulated with arithmetic operations.
 
 #### Factory methods
 
@@ -142,7 +132,6 @@ A `DateTime` object is created by a factory method, followed by a chain of opera
   DateTime.from('2024-01-01T12:00:00.000Z').hourOfDay() // 12
   ```
 
-
 ### `Duration` class
 
 The `Duration` class represents a length of time. It supports absolute durations (days and smaller units) but not relative durations (months/years).
@@ -193,6 +182,27 @@ The `Duration` class represents a length of time. It supports absolute durations
   ) // 24 hours
   ```
 
+#### Arithmetic operations
+
+- `plus(duration: AbsoluteDuration): Duration`
+  ```ts
+  Duration.hours(2)
+    .plus({ minutes: 30 })
+    // 2.5 hours
+  ```
+
+- `minus(duration: AbsoluteDuration): Duration`
+  ```ts
+  Duration.hours(5)
+    .minus({ hours: 2, minutes: 30 })
+    // 2.5 hours
+  ```
+
+- `abs()` - Get absolute value of duration
+  ```ts
+  Duration.hours(-2).abs() // 2 hours
+  ```
+
 #### Terminal methods
 
 - `days()` - Get duration in days
@@ -230,23 +240,3 @@ The `Duration` class represents a length of time. It supports absolute durations
   // "P1DT2H30M"
   ```
 
-#### Arithmetic operations
-
-- `plus(duration: AbsoluteDuration): Duration`
-  ```ts
-  Duration.hours(2)
-    .plus({ minutes: 30 })
-    // 2.5 hours
-  ```
-
-- `minus(duration: AbsoluteDuration): Duration`
-  ```ts
-  Duration.hours(5)
-    .minus({ hours: 2, minutes: 30 })
-    // 2.5 hours
-  ```
-
-- `abs()` - Get absolute value of duration
-  ```ts
-  Duration.hours(-2).abs() // 2 hours
-  ```

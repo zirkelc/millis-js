@@ -8,7 +8,6 @@ import type {
   Minutes,
   Seconds,
 } from './types.js';
-import { AbsoluteUnits } from './units.js';
 
 /**
  * Duration options
@@ -24,11 +23,13 @@ type DurationOptions = {
 };
 
 /**
- * Duration class represents a duration of time.
+ * Duration class represents a length of time.
  */
-export class Duration extends AbsoluteUnits {
+export class Duration {
+  private value: Milliseconds;
+
   private constructor(value: Milliseconds) {
-    super(value);
+    this.value = value;
   }
 
   /**
@@ -91,9 +92,16 @@ export class Duration extends AbsoluteUnits {
   }
 
   /**
+   * Returns the number of milliseconds of the `Duration` object.
+   */
+  millis(): Milliseconds {
+    return this.value;
+  }
+
+  /**
    * Returns the number of seconds of the `Duration` object.
    */
-  override seconds(options?: DurationOptions): Seconds {
+  seconds(options?: DurationOptions): Seconds {
     const value = this.millis() / 1_000;
 
     return this.return(value, options);
@@ -102,7 +110,7 @@ export class Duration extends AbsoluteUnits {
   /**
    * Returns the number of minutes of the `Duration` object.
    */
-  override minutes(options?: DurationOptions): Minutes {
+  minutes(options?: DurationOptions): Minutes {
     const value = this.seconds() / 60;
 
     return this.return(value, options);
@@ -111,7 +119,7 @@ export class Duration extends AbsoluteUnits {
   /**
    * Returns the number of hours of the `Duration` object.
    */
-  override hours(options?: DurationOptions): Hours {
+  hours(options?: DurationOptions): Hours {
     const value = this.minutes() / 60;
 
     return this.return(value, options);
@@ -120,7 +128,7 @@ export class Duration extends AbsoluteUnits {
   /**
    * Returns the number of days of the `Duration` object.
    */
-  override days(options?: DurationOptions): Days {
+  days(options?: DurationOptions): Days {
     const value = this.hours() / 24;
 
     return this.return(value, options);
@@ -176,14 +184,14 @@ export class Duration extends AbsoluteUnits {
   /**
    * Returns the ISO string representation of the `Duration` object.
    */
-  override toString(): string {
+  toString(): string {
     return this.iso();
   }
 
   /**
-   * Returns the milliseconds value when coercing to a number
+   * Returns the milliseconds of the `Duration` object when coercing to a number
    */
-  override valueOf(): number {
+  valueOf(): number {
     return this.millis();
   }
 

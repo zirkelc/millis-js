@@ -1,26 +1,33 @@
 import { Duration } from './duration.js';
-import type { AbsoluteDuration, RelativeDuration } from './types.js';
+import type {
+  AbsoluteDuration,
+  Days,
+  Hours,
+  Minutes,
+  RelativeDuration,
+} from './types.js';
 import type { DateTimeLike, ISO, Seconds } from './types.js';
 import type { Milliseconds } from './types.js';
-import { AbsoluteUnits } from './units.js';
 
 /**
  * DateTime class for date and time operations.
  */
-export class DateTime extends AbsoluteUnits {
+export class DateTime {
+  private value: Milliseconds;
+
   private constructor(value: Milliseconds) {
-    super(value);
+    this.value = value;
   }
 
   /**
-   * Returns the current date and time in milliseconds.
+   * Returns the number of milliseconds elapsed since midnight, January 1, 1970 Universal Coordinated Time (UTC).
    */
   static instant(): Milliseconds {
     return Date.now();
   }
 
   /**
-   * Returns the current date and time as a `DateTime` object.
+   * Returns a new `DateTime` object representing the current date and time.
    */
   static now(): DateTime {
     return new DateTime(DateTime.instant());
@@ -33,6 +40,41 @@ export class DateTime extends AbsoluteUnits {
     if (dateTime instanceof Date) return new DateTime(dateTime.getTime());
     if (dateTime instanceof DateTime) return new DateTime(dateTime.millis());
     return new DateTime(new Date(dateTime).getTime());
+  }
+
+  /**
+   * Returns the number of milliseconds of the `DateTime` object.
+   */
+  millis(): Milliseconds {
+    return this.value;
+  }
+
+  /**
+   * Returns the number of seconds of the `DateTime` object.
+   */
+  seconds(): Seconds {
+    return this.millis() / 1_000;
+  }
+
+  /**
+   * Returns the number of minutes of the `DateTime` object.
+   */
+  minutes(): Minutes {
+    return this.seconds() / 60;
+  }
+
+  /**
+   * Returns the number of hours of the `DateTime` object.
+   */
+  hours(): Hours {
+    return this.minutes() / 60;
+  }
+
+  /**
+   * Returns the number of days of the `DateTime` object.
+   */
+  days(): Days {
+    return this.hours() / 24;
   }
 
   /**
@@ -110,14 +152,14 @@ export class DateTime extends AbsoluteUnits {
    * Returns the ISO string representation of the `DateTime` object.
    * Example: "2024-01-01T00:00:00.000Z"
    */
-  override toString(): string {
+  toString(): string {
     return this.iso();
   }
 
   /**
    * Returns the milliseconds value when coercing to a number
    */
-  override valueOf(): number {
+  valueOf(): number {
     return this.millis();
   }
 
