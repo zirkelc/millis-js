@@ -1,3 +1,7 @@
+[![CI](https://github.com/zirkelc/millis-js/actions/workflows/ci.yml/badge.svg)](https://github.com/zirkelc/millis-js/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/millis-js)](https://www.npmjs.com/package/millis-js)
+[![npm](https://img.shields.io/npm/dt/millis-js)](https://www.npmjs.com/package/millis-js)
+
 # Millis.js
 
 A tiny and dependency-free library for date and time manipulation in JavaScript. It provides an elegant, chainable API with immutable operations, making it easy to perform complex date arithmetic while avoiding common pitfalls.
