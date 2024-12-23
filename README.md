@@ -14,6 +14,12 @@ A tiny and dependency-free library for date and time manipulation in JavaScript.
 - ⚡ **Zero dependencies** - Tiny footprint, built on native JavaScript Date
 - 🎯 **Type-safe** - Written in TypeScript with full type definitions
 
+## Install
+
+```bash
+npm install millis-js
+```
+
 ## API
 
 This library provides two classes: `DateTime` and `Duration`.
