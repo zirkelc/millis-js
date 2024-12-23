@@ -1,7 +1,7 @@
 {
   "name": "millis-js",
   "version": "0.0.1",
-  "description": "",
+  "description": "A tiny and dependency-free library for date and time manipulation in JavaScript.",
   "packageManager": "pnpm@9.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

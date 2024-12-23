@@ -47,12 +47,6 @@ Factory methods return a new `DateTime` instance.
   DateTime.from(DateTime.now());
   ```
 
-- `DateTime.millis(): number`
-  ```ts
-  // Get current time in milliseconds (same as Date.now())
-  DateTime.millis();
-  ```
-
 #### Arithmetic operations
 
 DateTime accepts both absolute (days, hours, minutes, seconds, milliseconds) and relative (months, years) durations.
