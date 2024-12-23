@@ -22,7 +22,7 @@ export class DateTime {
   /**
    * Returns the number of milliseconds elapsed since midnight, January 1, 1970 Universal Coordinated Time (UTC).
    */
-  static instant(): Milliseconds {
+  static millis(): Milliseconds {
     return Date.now();
   }
 
@@ -30,7 +30,7 @@ export class DateTime {
    * Returns a new `DateTime` object representing the current date and time.
    */
   static now(): DateTime {
-    return new DateTime(DateTime.instant());
+    return new DateTime(DateTime.millis());
   }
 
   /**

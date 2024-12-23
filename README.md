@@ -20,20 +20,22 @@ This library provides two classes: `DateTime` and `Duration`.
 
 ### `DateTime` class
 
-The `DateTime` class represents a timestamp and can be manipulated with arithmetic operations.
+The `DateTime` class represents a millisecond timestamp.
 
 #### Factory methods
+
+Factory methods return a new `DateTime` instance.
 
 - `DateTime.now(): DateTime`
   ```ts
   // Get current time
-  DateTime.now(); // 2024-01-01T00:00:00.000Z
+  DateTime.now(); 
   ```
 
 - `DateTime.from(dateTime: DateTimeLike): DateTime`
   ```ts
   // From milliseconds
-  DateTime.from(1704067200000); // 2024-01-01T00:00:00.000Z
+  DateTime.from(1704067200000); 
 
   // From ISO string
   DateTime.from('2024-01-01T00:00:00.000Z');
@@ -45,7 +47,15 @@ The `DateTime` class represents a timestamp and can be manipulated with arithmet
   DateTime.from(DateTime.now());
   ```
 
+- `DateTime.millis(): number`
+  ```ts
+  // Get current time in milliseconds (same as Date.now())
+  DateTime.millis();
+  ```
+
 #### Arithmetic operations
+
+DateTime accepts both absolute (days, hours, minutes, seconds, milliseconds) and relative (months, years) durations.
 
 - `plus(duration: AbsoluteDuration & RelativeDuration): DateTime`
   ```ts
@@ -80,69 +90,73 @@ The `DateTime` class represents a timestamp and can be manipulated with arithmet
 
 #### Terminal methods
 
-- `days()` - Get days since Unix Epoch
+Terminal methods end the chain and return a final value.
+
+- `days(): number` - Get days since Unix Epoch
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').days() // 19722
   ```
 
-- `hours()` - Get hours since Unix Epoch
+- `hours(): number` - Get hours since Unix Epoch
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').hours() // 473328
   ```
 
-- `minutes()` - Get minutes since Unix Epoch
+- `minutes(): number` - Get minutes since Unix Epoch
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').minutes() // 28399680
   ```
 
-- `seconds()` - Get seconds since Unix Epoch
+- `seconds(): number` - Get seconds since Unix Epoch
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').seconds() // 1704067200
   ```
 
-- `millis()` - Get milliseconds since Unix Epoch
+- `millis(): number` - Get milliseconds since Unix Epoch
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').millis() // 1704067200000
   ```
 
-- `timestamp()` - Get seconds since Unix Epoch (floored)
+- `timestamp(): number` - Get seconds since Unix Epoch (floored)
   ```ts
   DateTime.from('2024-01-01T00:00:00.500Z').timestamp() // 1704067200
   ```
 
-- `date()` - Get JavaScript Date object
+- `date(): Date` - Get JavaScript Date object
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').date() // Date object
   ```
 
-- `iso()` - Get ISO string representation
+- `iso(): string` - Get ISO string representation
   ```ts
   DateTime.now().iso() // "2024-01-01T00:00:00.000Z"
   ```
 
-- `year()` - Get the year
+- `year(): number` - Get the year
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').year() // 2024
   ```
 
-- `dayOfYear()` - Get the day of year (1-365/366)
+- `dayOfYear(): number` - Get the day of year (1-365/366)
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').dayOfYear() // 1
   DateTime.from('2024-12-31T00:00:00.000Z').dayOfYear() // 366 (leap year)
   ```
 
-- `hourOfDay()` - Get the hour of day (0-23)
+- `hourOfDay(): number` - Get the hour of day (0-23)
   ```ts
   DateTime.from('2024-01-01T12:00:00.000Z').hourOfDay() // 12
   ```
 
 ### `Duration` class
 
-The `Duration` class represents a length of time. It supports absolute durations (days and smaller units) but not relative durations (months/years).
+The `Duration` class represents a length of time.
 
 #### Factory methods
 
-- `Duration.of(duration: AbsoluteDuration)`
+Factory methods return a new `Duration` instance.
+
+- `Duration.of(duration: AbsoluteDuration): Duration`
   ```ts
   Duration.of({ 
     days: 1,
@@ -178,7 +192,7 @@ The `Duration` class represents a length of time. It supports absolute durations
   Duration.millis(1500)
   ```
 
-- `Duration.diff(start: DateTimeLike, end: DateTimeLike)`
+- `Duration.diff(start: DateTimeLike, end: DateTimeLike): Duration`
   ```ts
   Duration.diff(
     '2024-01-01T00:00:00.000Z',
@@ -187,6 +201,8 @@ The `Duration` class represents a length of time. It supports absolute durations
   ```
 
 #### Arithmetic operations
+
+Duration accepts absolute durations (days, hours, minutes, seconds, milliseconds) only.
 
 - `plus(duration: AbsoluteDuration): Duration`
   ```ts
@@ -209,38 +225,43 @@ The `Duration` class represents a length of time. It supports absolute durations
 
 #### Terminal methods
 
-- `days()` - Get duration in days
+Terminal methods end the chain and return a final value.
+
+- `days(): number` - Get duration in days
   ```ts
   Duration.hours(25).days() // 1.0416666666666667
   Duration.hours(25).days({ round: true }) // 1
   ```
 
-- `hours()` - Get duration in hours
+- `hours(): number` - Get duration in hours
   ```ts
   Duration.minutes(150).hours() // 2.5
   Duration.minutes(150).hours({ round: true }) // 3
   ```
 
-- `minutes()` - Get duration in minutes
+- `minutes(): number` - Get duration in minutes
   ```ts
   Duration.seconds(150).minutes() // 2.5
   Duration.seconds(150).minutes({ round: true }) // 3
   ```
 
-- `seconds()` - Get duration in seconds
+- `seconds(): number` - Get duration in seconds
   ```ts
   Duration.millis(2500).seconds() // 2.5
   Duration.millis(2500).seconds({ round: true }) // 3
   ```
 
-- `millis()` - Get duration in milliseconds
+- `millis(): number` - Get duration in milliseconds
   ```ts
   Duration.seconds(1.5).millis() // 1500
   ```
 
-- `iso()` - Get ISO duration string
+- `iso(): string` - Get ISO duration string
   ```ts
   Duration.of({ days: 1, hours: 2, minutes: 30 }).iso()
   // "P1DT2H30M"
   ```
 
+## License
+
+MIT

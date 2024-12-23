@@ -6,9 +6,9 @@ vi.useFakeTimers();
 vi.setSystemTime(new Date(dates.jan1_2024));
 
 describe('DateTime', () => {
-  describe('instant()', () => {
+  describe('millis()', () => {
     test('should return current time in milliseconds', () => {
-      expect(DateTime.instant()).toBe(Date.now());
+      expect(DateTime.millis()).toBe(Date.now());
     });
   });
 
