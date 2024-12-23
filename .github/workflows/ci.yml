@@ -85,15 +85,3 @@ jobs:
         run: |
           echo "Version in package.json has not changed. Skipping."
           exit 0
-
-      - name: Create Release
-        if: steps.publish.outputs.type != ''
-        id: release
-        uses: ncipollo/release-action@v1 # https://github.com/ncipollo/release-action
-        with:
-          allowUpdates: true
-          generateReleaseNotes: true
-          commit: ${{ github.sha }}
-          draft: false
-          name: v${{ steps.publish.outputs.version }}
-          tag: v${{ steps.publish.outputs.version }}
