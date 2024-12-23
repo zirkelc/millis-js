@@ -4,7 +4,7 @@
 
 # Millis.js
 
-A tiny and dependency-free library for date and time manipulation in JavaScript. It provides an elegant, chainable API with immutable operations, making it easy to perform complex date arithmetic while avoiding common pitfalls.
+A tiny and dependency-free library for date and time arithmetic with a chainable and immutable API.
 
 ## Key Features
 
@@ -49,7 +49,7 @@ Factory methods return a new `DateTime` instance.
   // From Date object
   DateTime.from(new Date());
 
-  // From another DateTime object
+  // From DateTime object
   DateTime.from(DateTime.now());
   ```
 
@@ -194,9 +194,28 @@ Factory methods return a new `Duration` instance.
 
 - `Duration.diff(start: DateTimeLike, end: DateTimeLike): Duration`
   ```ts
+  // From milliseconds
+  Duration.diff(
+    1704067200000,
+    1704153600000
+  ) // 24 hours
+
+  // From ISO strings
   Duration.diff(
     '2024-01-01T00:00:00.000Z',
     '2024-01-02T00:00:00.000Z'
+  ) // 24 hours
+
+  // From DateTime objects
+  Duration.diff(
+    DateTime.from('2024-01-01T00:00:00.000Z'),
+    DateTime.from('2024-01-02T00:00:00.000Z')
+  ) // 24 hours
+
+  // From Date objects
+  Duration.diff(
+    new Date('2024-01-01T00:00:00.000Z'),
+    new Date('2024-01-02T00:00:00.000Z')
   ) // 24 hours
   ```
 
