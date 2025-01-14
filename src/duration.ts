@@ -23,7 +23,7 @@ type DurationOptions = {
 };
 
 /**
- * Duration class represents a length of time.
+ * A `Duration` represents a length of time.
  */
 export class Duration {
   private value: Milliseconds;

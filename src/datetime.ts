@@ -17,7 +17,7 @@ type FormatLike = DateTimeFormat | Intl.DateTimeFormat;
 type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
 
 /**
- * DateTime class for date and time operations.
+ * A `DateTime` represents a point in time.
  */
 export class DateTime {
   private value: Milliseconds;
@@ -34,14 +34,14 @@ export class DateTime {
   }
 
   /**
-   * Returns a new `DateTime` object representing the current date and time.
+   * Returns a new DateTime object representing the current date and time.
    */
   static now(): DateTime {
     return new DateTime(DateTime.millis());
   }
 
   /**
-   * Returns a new `DateTime` object from a `DateTimeLike` value.
+   * Returns a new DateTime object from a DateTimeLike value.
    */
   static from(dateTime: DateTimeLike): DateTime {
     // Milliseconds
@@ -138,12 +138,15 @@ export class DateTime {
   }
 
   /**
-   * Creates an `Interval` from this `DateTime` to the specified end `DateTime`
+   * Creates an Interval from this DateTime to the specified end DateTime
    */
   until(end: DateTimeLike): Interval {
     return Interval.between(this, end);
   }
 
+  /**
+   * Formats the DateTime according to the specified format
+   */
   format(format: FormatLike) {
     if (format instanceof Intl.DateTimeFormat)
       return format.format(this.date());
@@ -164,43 +167,42 @@ export class DateTime {
   }
 
   /**
-   * Returns the number of milliseconds of the `DateTime` object.
+   * Returns the number of milliseconds of the DateTime object.
    */
   millis(): Milliseconds {
     return this.value;
   }
 
   /**
-   * Returns the ISO string representation of the `DateTime` object.
+   * Returns the ISO string representation of the DateTime object.
    */
   iso(): ISO {
     return new Date(this.millis()).toISOString();
   }
 
   /**
-   * Returns the number of seconds since the Unix Epoch.
-   * The value is floored to the nearest integer.
+   * Returns the number of seconds since the Unix Epoch. The value is floored to the nearest integer.
    */
   timestamp(): Seconds {
     return Math.floor(this.millis() / 1_000);
   }
 
   /**
-   * Returns the JavaScript Date object representation of the `DateTime` object.
+   * Returns the JavaScript Date object representation of the DateTime object.
    */
   date(): Date {
     return new Date(this.millis());
   }
 
   /**
-   * Returns the year for the current `DateTime` object.
+   * Returns the year for the current DateTime object.
    */
   year(): number {
     return this.date().getUTCFullYear();
   }
 
   /**
-   * Returns the day of the year (1-365/366) for the current `DateTime` object.
+   * Returns the day of the year (1-365/366) for the current DateTime object.
    */
   dayOfYear(): number {
     const currentDate = this.date();
@@ -213,42 +215,42 @@ export class DateTime {
   }
 
   /**
-   * Returns the day of the month (1-31) for the current `DateTime` object.
+   * Returns the day of the month (1-31) for the current DateTime object.
    */
   dayOfMonth(): number {
     return this.date().getUTCDate();
   }
 
   /**
-   * Returns the month of the year (1-12) for the current `DateTime` object.
+   * Returns the month of the year (1-12) for the current DateTime object.
    */
   month(): number {
     return this.date().getUTCMonth() + 1;
   }
 
   /**
-   * Returns the hour of the day (0-23) for the current `DateTime` object.
+   * Returns the hour of the day (0-23) for the current DateTime object.
    */
   hour(): number {
     return this.date().getUTCHours();
   }
 
   /**
-   * Returns the minute of the hour (0-59) for the current `DateTime` object.
+   * Returns the minute of the hour (0-59) for the current DateTime object.
    */
   minute(): number {
     return this.date().getUTCMinutes();
   }
 
   /**
-   * Returns the second of the minute (0-59) for the current `DateTime` object.
+   * Returns the second of the minute (0-59) for the current DateTime object.
    */
   second(): number {
     return this.date().getUTCSeconds();
   }
 
   /**
-   * Returns a new `DateTime` object by adding a duration to the current `DateTime` object.
+   * Returns a new DateTime object by adding a duration to the current DateTime object.
    */
   plus(duration: DurationLike) {
     const millis =
@@ -263,7 +265,7 @@ export class DateTime {
   }
 
   /**
-   * Returns a new `DateTime` object by subtracting a duration from the current `DateTime` object.
+   * Returns a new DateTime object by subtracting a duration from the current DateTime object.
    */
   minus(duration: DurationLike) {
     const millis =
@@ -278,8 +280,7 @@ export class DateTime {
   }
 
   /**
-   * Returns the ISO string representation of the `DateTime` object.
-   * Example: "2024-01-01T00:00:00.000Z"
+   * Returns the ISO string representation of the DateTime object.
    */
   toString(): string {
     return this.iso();
@@ -292,78 +293,170 @@ export class DateTime {
     return this.millis();
   }
 
+  /**
+   * Returns a new DateTime object set to the start of the second
+   */
   startOfSecond(): DateTime {
     return this.startOf('second');
   }
+
+  /**
+   * Returns a new DateTime object set to the start of the minute
+   */
   startOfMinute(): DateTime {
     return this.startOf('minute');
   }
+
+  /**
+   * Returns a new DateTime object set to the start of the hour
+   */
   startOfHour(): DateTime {
     return this.startOf('hour');
   }
+
+  /**
+   * Returns a new DateTime object set to the start of the day
+   */
   startOfDay(): DateTime {
     return this.startOf('day');
   }
+
+  /**
+   * Returns a new DateTime object set to the start of the month
+   */
   startOfMonth(): DateTime {
     return this.startOf('month');
   }
+
+  /**
+   * Returns a new DateTime object set to the start of the year
+   */
   startOfYear(): DateTime {
     return this.startOf('year');
   }
 
+  /**
+   * Returns a new DateTime object set to the end of the second
+   */
   endOfSecond(): DateTime {
     return this.endOf('second');
   }
+
+  /**
+   * Returns a new DateTime object set to the end of the minute
+   */
   endOfMinute(): DateTime {
     return this.endOf('minute');
   }
+
+  /**
+   * Returns a new DateTime object set to the end of the hour
+   */
   endOfHour(): DateTime {
     return this.endOf('hour');
   }
+
+  /**
+   * Returns a new DateTime object set to the end of the day
+   */
   endOfDay(): DateTime {
     return this.endOf('day');
   }
+
+  /**
+   * Returns a new DateTime object set to the end of the month
+   */
   endOfMonth(): DateTime {
     return this.endOf('month');
   }
+
+  /**
+   * Returns a new DateTime object set to the end of the year
+   */
   endOfYear(): DateTime {
     return this.endOf('year');
   }
 
+  /**
+   * Checks if the current DateTime is at the start of the second
+   */
   isStartOfSecond(): boolean {
     return this.isStartOf('second');
   }
+
+  /**
+   * Checks if the current DateTime is at the start of the minute
+   */
   isStartOfMinute(): boolean {
     return this.isStartOf('minute');
   }
+
+  /**
+   * Checks if the current DateTime is at the start of the hour
+   */
   isStartOfHour(): boolean {
     return this.isStartOf('hour');
   }
+
+  /**
+   * Checks if the current DateTime is at the start of the day
+   */
   isStartOfDay(): boolean {
     return this.isStartOf('day');
   }
+
+  /**
+   * Checks if the current DateTime is at the start of the month
+   */
   isStartOfMonth(): boolean {
     return this.isStartOf('month');
   }
+
+  /**
+   * Checks if the current DateTime is at the start of the year
+   */
   isStartOfYear(): boolean {
     return this.isStartOf('year');
   }
 
+  /**
+   * Checks if the current DateTime is at the end of the second
+   */
   isEndOfSecond(): boolean {
     return this.isEndOf('second');
   }
+
+  /**
+   * Checks if the current DateTime is at the end of the minute
+   */
   isEndOfMinute(): boolean {
     return this.isEndOf('minute');
   }
+
+  /**
+   * Checks if the current DateTime is at the end of the hour
+   */
   isEndOfHour(): boolean {
     return this.isEndOf('hour');
   }
+
+  /**
+   * Checks if the current DateTime is at the end of the day
+   */
   isEndOfDay(): boolean {
     return this.isEndOf('day');
   }
+
+  /**
+   * Checks if the current DateTime is at the end of the month
+   */
   isEndOfMonth(): boolean {
     return this.isEndOf('month');
   }
+
+  /**
+   * Checks if the current DateTime is at the end of the year
+   */
   isEndOfYear(): boolean {
     return this.isEndOf('year');
   }
@@ -525,9 +618,9 @@ export class DateTime {
 
   /**
    * Calculates the duration in milliseconds between the current DateTime and the relative duration.
-   * The `minus` parameter is used to determine the direction of the duration.
-   * If `minus` is true, the duration is subtracted from the current DateTime.
-   * If `minus` is false, the duration is added to the current DateTime.
+   * The minus parameter is used to determine the direction of the duration.
+   * If minus is true, the duration is subtracted from the current DateTime.
+   * If minus is false, the duration is added to the current DateTime.
    * In other words, are we going back in time or forward in time?
    */
   private relativeDuration(
