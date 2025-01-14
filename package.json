@@ -1,7 +1,7 @@
 {
   "name": "millis-js",
   "version": "0.1.0",
-  "description": "A tiny and dependency-free library for date and time arithmetic with a chainable and immutable API",
+  "description": "A tiny and dependency-free datetime library with a chainable and immutable API",
   "packageManager": "pnpm@9.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -15,11 +15,10 @@
   },
   "scripts": {
     "prepublishOnly": "pnpm build && pnpm typecheck",
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build": "tsup && attw --pack .",
     "test": "vitest",
     "lint": "biome check . --write",
-    "prepare": "husky",
-    "typecheck": "attw --pack ."
+    "prepare": "husky"
   },
   "keywords": [
     "millis",

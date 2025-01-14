@@ -4,7 +4,7 @@
 
 # Millis.js
 
-A tiny and dependency-free library for date and time arithmetic with a chainable and immutable API.
+A tiny and dependency-free datetime library with a chainable and immutable API.
 
 ## Key Features
 
