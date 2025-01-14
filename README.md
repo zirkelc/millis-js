@@ -11,7 +11,7 @@ A tiny and dependency-free library for date and time arithmetic with a chainable
 - 🔄 **Immutable operations** - All operations return new instances, preventing accidental state mutations
 - 🔗 **Chainable API** - Fluent interface for composing multiple operations
 - 📅 **UTC-based** - Works with UTC milliseconds internally, avoiding timezone complexities
-- ⚡ **Zero dependencies** - Tiny footprint, built on native JavaScript Date
+- ⚡ **Zero dependencies** - Tiny footprint, built without any external dependencies
 - 🎯 **Type-safe** - Written in TypeScript with full type definitions
 
 ## Install
