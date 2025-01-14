@@ -34,8 +34,16 @@ export class Duration {
 
   /**
    * Creates a `Duration` object from an absolute duration.
+   * @deprecated Use `Duration.from` instead.
    */
   static of(duration: AbsoluteDuration) {
+    return Duration.from(duration);
+  }
+
+  /**
+   * Creates a `Duration` object from an absolute duration.
+   */
+  static from(duration: AbsoluteDuration) {
     const millis =
       (duration.millis || 0) +
       (duration.seconds || 0) * 1_000 +
@@ -47,48 +55,56 @@ export class Duration {
   }
 
   /**
+   * Creates a `Duration` object from the difference between two `DateTimeLike` objects.
+   * @deprecated Use `Duration.between` instead.
+   */
+  static diff(start: DateTimeLike, end: DateTimeLike): Duration {
+    return Duration.between(start, end);
+  }
+
+  /**
+   * Creates a `Duration` object from the difference between two `DateTimeLike` objects.
+   */
+  static between(start: DateTimeLike, end: DateTimeLike): Duration {
+    const startDate = DateTime.from(start);
+    const endDate = DateTime.from(end);
+
+    return Duration.from({ millis: endDate.millis() - startDate.millis() });
+  }
+
+  /**
    * Creates a `Duration` object from a number of days.
    */
   static days(days: number): Duration {
-    return Duration.of({ days });
+    return Duration.from({ days });
   }
 
   /**
    * Creates a `Duration` object from a number of hours.
    */
   static hours(hours: number): Duration {
-    return Duration.of({ hours });
+    return Duration.from({ hours });
   }
 
   /**
    * Creates a `Duration` object from a number of minutes.
    */
   static minutes(minutes: number): Duration {
-    return Duration.of({ minutes });
+    return Duration.from({ minutes });
   }
 
   /**
    * Creates a `Duration` object from a number of seconds.
    */
   static seconds(seconds: number): Duration {
-    return Duration.of({ seconds });
+    return Duration.from({ seconds });
   }
 
   /**
    * Creates a `Duration` object from a number of milliseconds.
    */
   static millis(millis: number): Duration {
-    return Duration.of({ millis });
-  }
-
-  /**
-   * Creates a `Duration` object from the difference between two `DateTimeLike` objects.
-   */
-  static diff(start: DateTimeLike, end: DateTimeLike): Duration {
-    const startMillis = DateTime.from(start).millis();
-    const endMillis = DateTime.from(end).millis();
-
-    return Duration.of({ millis: endMillis - startMillis });
+    return Duration.from({ millis });
   }
 
   /**
@@ -103,7 +119,6 @@ export class Duration {
    */
   seconds(options?: DurationOptions): Seconds {
     const value = this.millis() / 1_000;
-
     return this.return(value, options);
   }
 
@@ -111,8 +126,7 @@ export class Duration {
    * Returns the number of minutes of the `Duration` object.
    */
   minutes(options?: DurationOptions): Minutes {
-    const value = this.seconds() / 60;
-
+    const value = this.millis() / (60 * 1_000);
     return this.return(value, options);
   }
 
@@ -120,8 +134,7 @@ export class Duration {
    * Returns the number of hours of the `Duration` object.
    */
   hours(options?: DurationOptions): Hours {
-    const value = this.minutes() / 60;
-
+    const value = this.millis() / (60 * 60 * 1_000);
     return this.return(value, options);
   }
 
@@ -129,7 +142,7 @@ export class Duration {
    * Returns the number of days of the `Duration` object.
    */
   days(options?: DurationOptions): Days {
-    const value = this.hours() / 24;
+    const value = this.millis() / (24 * 60 * 60 * 1_000);
 
     return this.return(value, options);
   }
@@ -164,14 +177,14 @@ export class Duration {
    * Returns a new `Duration` object by adding a duration to the current `Duration` object.
    */
   plus(duration: AbsoluteDuration) {
-    return new Duration(this.millis() + Duration.of(duration).millis());
+    return new Duration(this.millis() + Duration.from(duration).millis());
   }
 
   /**
    * Returns a new `Duration` object by subtracting a duration from the current `Duration` object.
    */
   minus(duration: AbsoluteDuration) {
-    return new Duration(this.millis() - Duration.of(duration).millis());
+    return new Duration(this.millis() - Duration.from(duration).millis());
   }
 
   /**

@@ -1,13 +1,20 @@
 import { Duration } from './duration.js';
+import { Interval } from './interval.js';
 import type {
   AbsoluteDuration,
+  DateTimeFormat,
   Days,
+  DurationLike,
   Hours,
   Minutes,
   RelativeDuration,
 } from './types.js';
 import type { DateTimeLike, ISO, Seconds } from './types.js';
 import type { Milliseconds } from './types.js';
+import { pad, parseNumber } from './utils.js';
+
+type FormatLike = DateTimeFormat | Intl.DateTimeFormat;
+type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
 
 /**
  * DateTime class for date and time operations.
@@ -37,9 +44,123 @@ export class DateTime {
    * Returns a new `DateTime` object from a `DateTimeLike` value.
    */
   static from(dateTime: DateTimeLike): DateTime {
-    if (dateTime instanceof Date) return new DateTime(dateTime.getTime());
+    // Milliseconds
+    if (typeof dateTime === 'number') return new DateTime(dateTime);
+
+    // ISO
+    if (typeof dateTime === 'string') return new DateTime(Date.parse(dateTime));
+
+    // Date instance
+    if (
+      dateTime instanceof Date ||
+      (typeof dateTime === 'object' && 'getTime' in dateTime)
+    )
+      return new DateTime(dateTime.getTime());
+
+    // DateTime instance
     if (dateTime instanceof DateTime) return new DateTime(dateTime.millis());
-    return new DateTime(new Date(dateTime).getTime());
+
+    // DateTimeComponents
+    if (typeof dateTime === 'object') {
+      if ('year' in dateTime) {
+        // Extract time components with defaults
+        const { hour = 0, minute = 0, second = 0, millisecond = 0 } = dateTime;
+
+        if ('dayOfYear' in dateTime) {
+          const date = new Date(
+            Date.UTC(
+              dateTime.year,
+              0, // January
+              1, // First day
+              hour,
+              minute,
+              second,
+              millisecond,
+            ),
+          );
+          date.setUTCDate(dateTime.dayOfYear);
+
+          if (date.getUTCFullYear() !== dateTime.year) {
+            throw new Error(
+              `Invalid day of year: ${dateTime.dayOfYear} for year ${dateTime.year}`,
+            );
+          }
+
+          return new DateTime(date.getTime());
+        }
+
+        const date = new Date(
+          Date.UTC(
+            dateTime.year,
+            dateTime.month - 1,
+            dateTime.dayOfMonth,
+            hour,
+            minute,
+            second,
+            millisecond,
+          ),
+        );
+
+        // Validate components match what was provided
+        if (
+          date.getUTCFullYear() !== dateTime.year ||
+          date.getUTCMonth() !== dateTime.month - 1 ||
+          date.getUTCDate() !== dateTime.dayOfMonth
+        ) {
+          throw new Error('Invalid date components');
+        }
+
+        return new DateTime(date.getTime());
+      }
+
+      if (Object.keys(dateTime).length === 1) {
+        const [format] = Object.keys(dateTime) as [DateTimeFormat];
+        const value = dateTime[format];
+        if (value === undefined) throw new Error('Invalid date time');
+
+        switch (format) {
+          case 'YYYY':
+            return new DateTime(Date.parse(value));
+          case 'YYYY-MM-DD':
+            return new DateTime(Date.parse(value));
+          case 'YYYY-DDD': {
+            const [year, dayOfYear] = value
+              .split('-')
+              .map((s) => parseNumber(s));
+
+            return DateTime.from({ year, dayOfYear });
+          }
+        }
+      }
+    }
+
+    throw new Error('Invalid date time');
+  }
+
+  /**
+   * Creates an `Interval` from this `DateTime` to the specified end `DateTime`
+   */
+  until(end: DateTimeLike): Interval {
+    return Interval.between(this, end);
+  }
+
+  format(format: FormatLike) {
+    if (format instanceof Intl.DateTimeFormat)
+      return format.format(this.date());
+
+    switch (format) {
+      case 'YYYY':
+        return `${pad(this.year(), 4)}`;
+      case 'YYYY-DDD':
+        return `${pad(this.year(), 4)}-${pad(this.dayOfYear(), 3)}`;
+      case 'YYYY-MM-DD':
+        return `${pad(this.year(), 4)}-${pad(this.month(), 2)}-${pad(this.dayOfMonth(), 2)}`;
+      case 'HH:mm:ss':
+        return `${pad(this.hour(), 2)}:${pad(this.minute(), 2)}:${pad(this.second(), 2)}`;
+    }
+    format satisfies never;
+
+    throw new Error(`Unsupported format: ${format}`);
   }
 
   /**
@@ -47,34 +168,6 @@ export class DateTime {
    */
   millis(): Milliseconds {
     return this.value;
-  }
-
-  /**
-   * Returns the number of seconds of the `DateTime` object.
-   */
-  seconds(): Seconds {
-    return this.millis() / 1_000;
-  }
-
-  /**
-   * Returns the number of minutes of the `DateTime` object.
-   */
-  minutes(): Minutes {
-    return this.seconds() / 60;
-  }
-
-  /**
-   * Returns the number of hours of the `DateTime` object.
-   */
-  hours(): Hours {
-    return this.minutes() / 60;
-  }
-
-  /**
-   * Returns the number of days of the `DateTime` object.
-   */
-  days(): Days {
-    return this.hours() / 24;
   }
 
   /**
@@ -93,7 +186,7 @@ export class DateTime {
   }
 
   /**
-   * Returns a JavaScript Date object representation of the `DateTime` object.
+   * Returns the JavaScript Date object representation of the `DateTime` object.
    */
   date(): Date {
     return new Date(this.millis());
@@ -120,32 +213,68 @@ export class DateTime {
   }
 
   /**
+   * Returns the day of the month (1-31) for the current `DateTime` object.
+   */
+  dayOfMonth(): number {
+    return this.date().getUTCDate();
+  }
+
+  /**
+   * Returns the month of the year (1-12) for the current `DateTime` object.
+   */
+  month(): number {
+    return this.date().getUTCMonth() + 1;
+  }
+
+  /**
    * Returns the hour of the day (0-23) for the current `DateTime` object.
    */
-  hourOfDay(): number {
+  hour(): number {
     return this.date().getUTCHours();
+  }
+
+  /**
+   * Returns the minute of the hour (0-59) for the current `DateTime` object.
+   */
+  minute(): number {
+    return this.date().getUTCMinutes();
+  }
+
+  /**
+   * Returns the second of the minute (0-59) for the current `DateTime` object.
+   */
+  second(): number {
+    return this.date().getUTCSeconds();
   }
 
   /**
    * Returns a new `DateTime` object by adding a duration to the current `DateTime` object.
    */
-  plus(duration: AbsoluteDuration & RelativeDuration) {
-    return new DateTime(
-      this.millis() +
-        this.relativeDuration(duration) +
-        this.absoluteDuration(duration),
-    );
+  plus(duration: DurationLike) {
+    const millis =
+      typeof duration === 'number'
+        ? duration
+        : duration instanceof Duration
+          ? duration.millis()
+          : this.relativeDuration(duration, false) +
+            this.absoluteDuration(duration);
+
+    return new DateTime(this.millis() + millis);
   }
 
   /**
    * Returns a new `DateTime` object by subtracting a duration from the current `DateTime` object.
    */
-  minus(duration: AbsoluteDuration & RelativeDuration) {
-    return new DateTime(
-      this.millis() -
-        this.relativeDuration(duration, true) -
-        this.absoluteDuration(duration),
-    );
+  minus(duration: DurationLike) {
+    const millis =
+      typeof duration === 'number'
+        ? duration
+        : duration instanceof Duration
+          ? duration.millis()
+          : this.relativeDuration(duration, true) +
+            this.absoluteDuration(duration);
+
+    return new DateTime(this.millis() - millis);
   }
 
   /**
@@ -163,14 +292,247 @@ export class DateTime {
     return this.millis();
   }
 
+  startOfSecond(): DateTime {
+    return this.startOf('second');
+  }
+  startOfMinute(): DateTime {
+    return this.startOf('minute');
+  }
+  startOfHour(): DateTime {
+    return this.startOf('hour');
+  }
+  startOfDay(): DateTime {
+    return this.startOf('day');
+  }
+  startOfMonth(): DateTime {
+    return this.startOf('month');
+  }
+  startOfYear(): DateTime {
+    return this.startOf('year');
+  }
+
+  endOfSecond(): DateTime {
+    return this.endOf('second');
+  }
+  endOfMinute(): DateTime {
+    return this.endOf('minute');
+  }
+  endOfHour(): DateTime {
+    return this.endOf('hour');
+  }
+  endOfDay(): DateTime {
+    return this.endOf('day');
+  }
+  endOfMonth(): DateTime {
+    return this.endOf('month');
+  }
+  endOfYear(): DateTime {
+    return this.endOf('year');
+  }
+
+  isStartOfSecond(): boolean {
+    return this.isStartOf('second');
+  }
+  isStartOfMinute(): boolean {
+    return this.isStartOf('minute');
+  }
+  isStartOfHour(): boolean {
+    return this.isStartOf('hour');
+  }
+  isStartOfDay(): boolean {
+    return this.isStartOf('day');
+  }
+  isStartOfMonth(): boolean {
+    return this.isStartOf('month');
+  }
+  isStartOfYear(): boolean {
+    return this.isStartOf('year');
+  }
+
+  isEndOfSecond(): boolean {
+    return this.isEndOf('second');
+  }
+  isEndOfMinute(): boolean {
+    return this.isEndOf('minute');
+  }
+  isEndOfHour(): boolean {
+    return this.isEndOf('hour');
+  }
+  isEndOfDay(): boolean {
+    return this.isEndOf('day');
+  }
+  isEndOfMonth(): boolean {
+    return this.isEndOf('month');
+  }
+  isEndOfYear(): boolean {
+    return this.isEndOf('year');
+  }
+
+  /**
+   * Returns a new DateTime object set to the start of the specified unit
+   */
+  private startOf(unit: TimeUnit): DateTime {
+    const date = this.date();
+    switch (unit) {
+      case 'second':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds(),
+            0,
+          ),
+        );
+      case 'minute':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            0,
+            0,
+          ),
+        );
+      case 'hour':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            0,
+            0,
+            0,
+          ),
+        );
+      case 'day':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            0,
+            0,
+            0,
+            0,
+          ),
+        );
+      case 'month':
+        return DateTime.from(
+          Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0, 0),
+        );
+      case 'year':
+        return DateTime.from(Date.UTC(date.getUTCFullYear(), 0, 1, 0, 0, 0, 0));
+    }
+  }
+
+  /**
+   * Returns a new DateTime object set to the end of the specified unit
+   */
+  private endOf(unit: TimeUnit): DateTime {
+    const date = this.date();
+    switch (unit) {
+      case 'second':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds(),
+            999,
+          ),
+        );
+      case 'minute':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            59,
+            999,
+          ),
+        );
+      case 'hour':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            59,
+            59,
+            999,
+          ),
+        );
+      case 'day':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            23,
+            59,
+            59,
+            999,
+          ),
+        );
+      case 'month':
+        return DateTime.from(
+          Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth() + 1,
+            0,
+            23,
+            59,
+            59,
+            999,
+          ),
+        );
+      case 'year':
+        return DateTime.from(
+          Date.UTC(date.getUTCFullYear(), 11, 31, 23, 59, 59, 999),
+        );
+    }
+  }
+
+  /**
+   * Checks if the current DateTime is at the start of the specified unit
+   */
+  private isStartOf(unit: TimeUnit): boolean {
+    return this.millis() === this.startOf(unit).millis();
+  }
+
+  /**
+   * Checks if the current DateTime is at the end of the specified unit
+   */
+  private isEndOf(unit: TimeUnit): boolean {
+    return this.millis() === this.endOf(unit).millis();
+  }
+
   private absoluteDuration(duration: AbsoluteDuration): Milliseconds {
     const { millis, seconds, minutes, hours, days } = duration;
     return Duration.of({ millis, seconds, minutes, hours, days }).millis();
   }
 
+  /**
+   * Calculates the duration in milliseconds between the current DateTime and the relative duration.
+   * The `minus` parameter is used to determine the direction of the duration.
+   * If `minus` is true, the duration is subtracted from the current DateTime.
+   * If `minus` is false, the duration is added to the current DateTime.
+   * In other words, are we going back in time or forward in time?
+   */
   private relativeDuration(
     duration: RelativeDuration,
-    minus = false,
+    minus: boolean,
   ): Milliseconds {
     const { months = 0, years = 0 } = duration;
 
