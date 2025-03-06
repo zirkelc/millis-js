@@ -1,6 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
 import { DateTime } from '../src/datetime.js';
-import { Duration } from '../src/duration.js';
 import { Interval } from '../src/interval.js';
 
 vi.useFakeTimers();
@@ -112,6 +111,50 @@ describe('Interval', () => {
 
         // Act & Assert
         expect(interval.toString()).toBe(interval.iso());
+      });
+    });
+
+    describe('contains()', () => {
+      test('should return true if datetime is within interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const result = interval.contains('2024-01-01T12:00:00.000Z');
+
+        // Assert
+        expect(result).toBe(true);
+      });
+
+      test('should return false if datetime is before interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const result = interval.contains('2023-12-31T23:59:59.999Z');
+
+        // Assert
+        expect(result).toBe(false);
+      });
+
+      test('should return false if datetime is after interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const result = interval.contains('2024-01-03T00:00:00.000Z');
+
+        // Assert
+        expect(result).toBe(false);
       });
     });
   });

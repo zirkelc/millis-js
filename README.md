@@ -32,13 +32,12 @@ The `DateTime` class represents a millisecond timestamp.
 
 Factory methods return a new `DateTime` instance.
 
-- `DateTime.now(): DateTime`: Returns a new instance representing the current UTC time
+- `DateTime.now(): DateTime`: Returns a new DateTime representing the current UTC time
   ```typescript
-  // Returns current UTC timestamp
-  DateTime.now();
+  DateTime.now(); // DateTime object
   ```
 
-- `DateTime.from(dateTime: DateTimeLike): DateTime`: Returns a new instance from a date time like object
+- `DateTime.from(dateTime: DateTimeLike): DateTime`: Returns a new DateTime from a date time like object
   ```typescript
   // From milliseconds timestamp
   DateTime.from(1_704_067_200_000);
@@ -57,17 +56,17 @@ Factory methods return a new `DateTime` instance.
     year: 2024,
     month: 1,
     dayOfMonth: 1,
-    hour: 12,     // optional
-    minute: 30,   // optional
-    second: 15,   // optional
-    millisecond: 0 // optional
+    hour: 12,       // optional
+    minute: 30,     // optional
+    second: 15,     // optional
+    millisecond: 0  // optional
   });
 
   // From ordinal date components
   DateTime.from({
     year: 2024,
     dayOfYear: 1,
-    hour: 12      // optional, etc.
+    hour: 12        // optional, etc.
   });
 
   // From format strings
@@ -76,38 +75,19 @@ Factory methods return a new `DateTime` instance.
   DateTime.from({ 'YYYY-DDD': '2024-001' });
   ```
 
-- `DateTime.until(dateTime: DateTimeLike): Interval`: Returns a new interval from the current time to a given date time
+- `DateTime.until(dateTime: DateTimeLike): Interval`: Returns an Interval from the current time to a given date time
   ```typescript
   // Creates interval spanning one day
-  DateTime.now().until(DateTime.now().plus({ days: 1 }))
+  DateTime.now().until(DateTime.now().plus({ days: 1 })) // Interval object
   ```
 
 #### Instance methods
-
-##### Formatting
-
-- `iso(): string`: Returns the ISO string representation
-  ```ts
-  DateTime.now().iso() // "2024-01-01T00:00:00.000Z"
-  ```
-
-- `format(format: DateTimeFormat | Intl.DateTimeFormat): string`: Format the date time using a format string
-  ```typescript
-  // Built-in formats
-  dateTime.format('YYYY');         // "2024"
-  dateTime.format('YYYY-DDD');     // "2024-001"
-  dateTime.format('YYYY-MM-DD');   // "2024-01-01"
-  dateTime.format('HH:mm:ss');     // "12:30:45"
-
-  // Using Intl.DateTimeFormat
-  dateTime.format(new Intl.DateTimeFormat('en-US')) // "1/1/2024, 12:30:45 AM"
-  ```
 
 ##### Arithmetic
 
 DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds) and relative (months, years) durations.
 
-- `plus(duration: DurationLike): DateTime`: Returns a new instance with the duration added
+- `plus(duration: DurationLike): DateTime`: Returns a DateTime with the duration added
   ```ts
   // Add absolute durations (days and smaller units)
   DateTime.from('2024-01-01T00:00:00.000Z').plus({ days: 1, hours: 2, minutes: 30 }) // 2024-01-02T02:30:00.000Z
@@ -122,7 +102,7 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
   DateTime.from('2024-01-31T00:00:00.000Z').plus(86_400_000) // 2024-02-01T00:00:00.000Z
   ```
 
-- `minus(duration: DurationLike): DateTime`: Returns a new instance with the duration subtracted
+- `minus(duration: DurationLike): DateTime`: Returns a DateTime with the duration subtracted
   ```ts
   // Subtract absolute durations
   DateTime.from('2024-01-01T00:00:00.000Z').minus({ days: 1, hours: 2 }) // 2023-12-30T22:00:00.000Z
@@ -137,170 +117,21 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
   DateTime.from('2024-01-31T00:00:00.000Z').minus(86_400_000) // 2023-12-31T00:00:00.000Z
   ```
 
-##### Manipulation
-
-- `startOfYear(): DateTime`: Returns a new instance set to the start of the year
-  ```ts
-  // Sets time to January 1st, 00:00:00.000
-  DateTime.from('2024-03-15T12:34:56.789Z').startOfYear() // 2024-01-01T00:00:00.000Z
-  ```
-
-- `startOfMonth(): DateTime`: Returns a new instance set to the start of the month
-  ```ts
-  // Sets time to 1st of month, 00:00:00.000
-  DateTime.from('2024-03-15T12:34:56.789Z').startOfMonth() // 2024-03-01T00:00:00.000Z
-  ```
-
-- `startOfDay(): DateTime`: Returns a new instance set to the start of the day
-  ```ts
-  // Sets time to 00:00:00.000
-  DateTime.from('2024-03-15T12:34:56.789Z').startOfDay() // 2024-03-15T00:00:00.000Z
-  ```
-
-- `startOfHour(): DateTime`: Returns a new instance set to the start of the hour
-  ```ts
-  // Sets minutes, seconds, and milliseconds to 0
-  DateTime.from('2024-03-15T12:34:56.789Z').startOfHour() // 2024-03-15T12:00:00.000Z
-  ```
-
-- `startOfMinute(): DateTime`: Returns a new instance set to the start of the minute
-  ```ts
-  // Sets seconds and milliseconds to 0
-  DateTime.from('2024-03-15T12:34:56.789Z').startOfMinute() // 2024-03-15T12:34:00.000Z
-  ```
-
-- `startOfSecond(): DateTime`: Returns a new instance set to the start of the second
-  ```ts
-  // Sets milliseconds to 0
-  DateTime.from('2024-03-15T12:34:56.789Z').startOfSecond() // 2024-03-15T12:34:56.000Z
-  ```
-
-- `endOfYear(): DateTime`: Returns a new instance set to the end of the year
-  ```ts
-  // Sets time to December 31st, 23:59:59.999
-  DateTime.from('2024-03-15T12:34:56.789Z').endOfYear() // 2024-12-31T23:59:59.999Z
-  ```
-
-- `endOfMonth(): DateTime`: Returns a new instance set to the end of the month
-  ```ts
-  // Sets time to last day of month, 23:59:59.999
-  DateTime.from('2024-03-15T12:34:56.789Z').endOfMonth() // 2024-03-31T23:59:59.999Z
-  ```
-
-- `endOfDay(): DateTime`: Returns a new instance set to the end of the day
-  ```ts
-  // Sets time to 23:59:59.999
-  DateTime.from('2024-03-15T12:34:56.789Z').endOfDay() // 2024-03-15T23:59:59.999Z
-  ```
-
-- `endOfHour(): DateTime`: Returns a new instance set to the end of the hour
-  ```ts
-  // Sets minutes, seconds, and milliseconds to their maximum values
-  DateTime.from('2024-03-15T12:34:56.789Z').endOfHour() // 2024-03-15T12:59:59.999Z
-  ```
-
-- `endOfMinute(): DateTime`: Returns a new instance set to the end of the minute
-  ```ts
-  // Sets seconds and milliseconds to their maximum values
-  DateTime.from('2024-03-15T12:34:56.789Z').endOfMinute() // 2024-03-15T12:34:59.999Z
-  ```
-
-- `endOfSecond(): DateTime`: Returns a new instance set to the end of the second
-  ```ts
-  // Sets milliseconds to 999
-  DateTime.from('2024-03-15T12:34:56.789Z').endOfSecond() // 2024-03-15T12:34:56.999Z
-  ```
-
-- `isStartOfYear(): boolean`: Returns true if the instance is at the start of the year
-  ```ts
-  // Checks if time is January 1st, 00:00:00.000
-  DateTime.from('2024-01-01T00:00:00.000Z').isStartOfYear() // true
-  ```
-
-- `isStartOfMonth(): boolean`: Returns true if the instance is at the start of the month
-  ```ts
-  // Checks if time is 1st of month, 00:00:00.000
-  DateTime.from('2024-01-01T00:00:00.000Z').isStartOfMonth() // true
-  ```
-
-- `isStartOfDay(): boolean`: Returns true if the instance is at the start of the day
-  ```ts
-  // Checks if time is 00:00:00.000
-  DateTime.from('2024-03-15T00:00:00.000Z').isStartOfDay() // true
-  ```
-
-- `isStartOfHour(): boolean`: Returns true if the instance is at the start of the hour
-  ```ts
-  // Checks if minutes, seconds, and milliseconds are 0
-  DateTime.from('2024-03-15T12:00:00.000Z').isStartOfHour() // true
-  ```
-
-- `isStartOfMinute(): boolean`: Returns true if the instance is at the start of the minute
-  ```ts
-  // Checks if seconds and milliseconds are 0
-  DateTime.from('2024-03-15T12:30:00.000Z').isStartOfMinute() // true
-  ```
-
-- `isStartOfSecond(): boolean`: Returns true if the instance is at the start of the second
-  ```ts
-  // Checks if milliseconds are 0
-  DateTime.from('2024-03-15T12:30:15.000Z').isStartOfSecond() // true
-  ```
-
-- `isEndOfYear(): boolean`: Returns true if the instance is at the end of the year
-  ```ts
-  // Checks if time is December 31st, 23:59:59.999
-  DateTime.from('2024-12-31T23:59:59.999Z').isEndOfYear() // true
-  ```
-
-- `isEndOfMonth(): boolean`: Returns true if the instance is at the end of the month
-  ```ts
-  // Checks if time is last day of month, 23:59:59.999
-  DateTime.from('2024-03-31T23:59:59.999Z').isEndOfMonth() // true
-  ```
-
-- `isEndOfDay(): boolean`: Returns true if the instance is at the end of the day
-  ```ts
-  // Checks if time is 23:59:59.999
-  DateTime.from('2024-03-15T23:59:59.999Z').isEndOfDay() // true
-  ```
-
-- `isEndOfHour(): boolean`: Returns true if the instance is at the end of the hour
-  ```ts
-  // Checks if minutes, seconds, and milliseconds are at maximum values
-  DateTime.from('2024-03-15T12:59:59.999Z').isEndOfHour() // true
-  ```
-
-- `isEndOfMinute(): boolean`: Returns true if the instance is at the end of the minute
-  ```ts
-  // Checks if seconds and milliseconds are at maximum values
-  DateTime.from('2024-03-15T12:34:59.999Z').isEndOfMinute() // true
-  ```
-
-- `isEndOfSecond(): boolean`: Returns true if the instance is at the end of the second
-  ```ts
-  // Checks if milliseconds are 999
-  DateTime.from('2024-03-15T12:34:56.999Z').isEndOfSecond() // true
-  ```
-
 ##### Conversion
 
 - `millis(): number`: Returns the milliseconds since Unix Epoch
   ```ts
-  // Returns milliseconds timestamp
   DateTime.from('2024-01-01T00:00:00.000Z').millis() // 1_704_067_200_000
   ```
 
 - `timestamp(): number`: Returns the seconds since Unix Epoch (floored)
   ```ts
-  // Floors to nearest second
   DateTime.from('2024-01-01T00:00:00.500Z').timestamp() // 1_704_067_200
   ```
 
 - `date(): Date`: Returns a JavaScript Date object
   ```ts
-  // Converts to native Date
-  DateTime.from('2024-01-01T00:00:00.000Z').date() // 2024-01-01T00:00:00.000Z
+  DateTime.from('2024-01-01T00:00:00.000Z').date() // new Date("2024-01-01T00:00:00.000Z")
   ```
 
 - `year(): number`: Returns the calendar year
@@ -339,6 +170,164 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
   DateTime.from('2024-01-01T12:30:15.000Z').second() // 15
   ```
 
+##### Comparison
+
+- `isBefore(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is before the given date time
+  ```ts
+  DateTime.from('2024-01-01T12:30:15.000Z').isBefore('2024-01-01T12:30:16.000Z') // true
+  ```
+
+- `isAfter(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is after the given date time
+  ```ts
+  DateTime.from('2024-01-01T12:30:15.000Z').isAfter('2024-01-01T12:30:14.000Z') // true
+  ```
+
+- `isBetween(start: DateTimeLike, end: DateTimeLike): boolean`: Returns true if the current DateTime is between the given start and end date times
+  ```ts
+  DateTime.from('2024-01-01T12:30:15.000Z').isBetween('2024-01-01T12:30:14.000Z', '2024-01-01T12:30:16.000Z') // true
+  ```
+
+- `isStartOfYear(): boolean`: Returns true if the current DateTime is at the start of the year
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').isStartOfYear() // true
+  ```
+
+- `isStartOfMonth(): boolean`: Returns true if the current DateTime is at the start of the month
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').isStartOfMonth() // true
+  ```
+
+- `isStartOfDay(): boolean`: Returns true if the current DateTime is at the start of the day
+  ```ts
+  DateTime.from('2024-03-15T00:00:00.000Z').isStartOfDay() // true
+  ```
+
+- `isStartOfHour(): boolean`: Returns true if the current DateTime is at the start of the hour
+  ```ts
+  DateTime.from('2024-03-15T12:00:00.000Z').isStartOfHour() // true
+  ```
+
+- `isStartOfMinute(): boolean`: Returns true if the current DateTime is at the start of the minute
+  ```ts
+  DateTime.from('2024-03-15T12:30:00.000Z').isStartOfMinute() // true
+  ```
+
+- `isStartOfSecond(): boolean`: Returns true if the current DateTime is at the start of the second
+  ```ts
+  DateTime.from('2024-03-15T12:30:15.000Z').isStartOfSecond() // true
+  ```
+
+- `isEndOfYear(): boolean`: Returns true if the current DateTime is at the end of the year
+  ```ts
+  DateTime.from('2024-12-31T23:59:59.999Z').isEndOfYear() // true
+  ```
+
+- `isEndOfMonth(): boolean`: Returns true if the current DateTime is at the end of the month
+  ```ts
+  DateTime.from('2024-03-31T23:59:59.999Z').isEndOfMonth() // true
+  ```
+
+- `isEndOfDay(): boolean`: Returns true if the current DateTime is at the end of the day
+  ```ts
+  DateTime.from('2024-03-15T23:59:59.999Z').isEndOfDay() // true
+  ```
+
+- `isEndOfHour(): boolean`: Returns true if the current DateTime is at the end of the hour
+  ```ts
+  DateTime.from('2024-03-15T12:59:59.999Z').isEndOfHour() // true
+  ```
+
+- `isEndOfMinute(): boolean`: Returns true if the current DateTime is at the end of the minute
+  ```ts
+  DateTime.from('2024-03-15T12:34:59.999Z').isEndOfMinute() // true
+  ```
+
+- `isEndOfSecond(): boolean`: Returns true if the current DateTime is at the end of the second
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.999Z').isEndOfSecond() // true
+  ```
+
+##### Formatting
+
+- `iso(): string`: Returns the ISO string representation
+  ```ts
+  DateTime.now().iso() // "2024-01-01T00:00:00.000Z"
+  ```
+
+- `format(format: DateTimeFormat | Intl.DateTimeFormat): string`: Format the date time using a format string
+  ```typescript
+  // Built-in formats
+  dateTime.format('YYYY');         // "2024"
+  dateTime.format('YYYY-DDD');     // "2024-001"
+  dateTime.format('YYYY-MM-DD');   // "2024-01-01"
+  dateTime.format('HH:mm:ss');     // "12:30:45"
+
+  // Using Intl.DateTimeFormat
+  dateTime.format(new Intl.DateTimeFormat('en-US')) // "1/1/2024, 12:30:45 AM"
+  ```
+
+##### Manipulation
+
+- `startOfYear(): DateTime`: Returns a new DateTime set to the start of the year
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').startOfYear() // 2024-01-01T00:00:00.000Z
+  ```
+
+- `startOfMonth(): DateTime`: Returns a new DateTime set to the start of the month
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').startOfMonth() // 2024-03-01T00:00:00.000Z
+  ```
+
+- `startOfDay(): DateTime`: Returns a new DateTime set to the start of the day
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').startOfDay() // 2024-03-15T00:00:00.000Z
+  ```
+
+- `startOfHour(): DateTime`: Returns a new DateTime set to the start of the hour
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').startOfHour() // 2024-03-15T12:00:00.000Z
+  ```
+
+- `startOfMinute(): DateTime`: Returns a new DateTime set to the start of the minute
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').startOfMinute() // 2024-03-15T12:34:00.000Z
+  ```
+
+- `startOfSecond(): DateTime`: Returns a new DateTime set to the start of the second
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').startOfSecond() // 2024-03-15T12:34:56.000Z
+  ```
+
+- `endOfYear(): DateTime`: Returns a new DateTime set to the end of the year
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').endOfYear() // 2024-12-31T23:59:59.999Z
+  ```
+
+- `endOfMonth(): DateTime`: Returns a new DateTime set to the end of the month
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').endOfMonth() // 2024-03-31T23:59:59.999Z
+  ```
+
+- `endOfDay(): DateTime`: Returns a new DateTime set to the end of the day
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').endOfDay() // 2024-03-15T23:59:59.999Z
+  ```
+
+- `endOfHour(): DateTime`: Returns a new DateTime set to the end of the hour
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').endOfHour() // 2024-03-15T12:59:59.999Z
+  ```
+
+- `endOfMinute(): DateTime`: Returns a new DateTime set to the end of the minute
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').endOfMinute() // 2024-03-15T12:34:59.999Z
+  ```
+
+- `endOfSecond(): DateTime`: Returns a new DateTime set to the end of the second
+  ```ts
+  DateTime.from('2024-03-15T12:34:56.789Z').endOfSecond() // 2024-03-15T12:34:56.999Z
+  ```
+
 ### `Duration` class
 
 The `Duration` class represents a length of time in milliseconds.
@@ -347,7 +336,7 @@ The `Duration` class represents a length of time in milliseconds.
 
 Factory methods return a new `Duration` instance.
 
-- `Duration.from(duration: DurationLike): Duration`: Returns a new duration instance from a duration like object
+- `Duration.from(duration: DurationLike): Duration`: Returns a Duration from a duration like object
   ```typescript
   // From components
   Duration.from({ 
@@ -360,7 +349,7 @@ Factory methods return a new `Duration` instance.
   Duration.from(93_600_000) // P1DT2H
   ```
 
-- `Duration.between(start: DateTimeLike, end: DateTimeLike): Duration`: Returns a new duration instance from a start and end date
+- `Duration.between(start: DateTimeLike, end: DateTimeLike): Duration`: Returns a Duration from a start and end date time
   ```typescript
   // From ISO strings
   Duration.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z')
@@ -387,17 +376,17 @@ Factory methods return a new `Duration` instance.
 
 Duration accepts **only** absolute durations (days, hours, minutes, seconds, milliseconds).
 
-- `plus(duration: AbsoluteDuration): Duration`: Returns a new duration instance by adding a duration
+- `plus(duration: AbsoluteDuration): Duration`: Returns a Duration by adding a duration
   ```ts
   Duration.hours(2).plus({ minutes: 30 }) // 2.5 hours
   ```
 
-- `minus(duration: AbsoluteDuration): Duration`: Returns a new duration instance by subtracting a duration
+- `minus(duration: AbsoluteDuration): Duration`: Returns a Duration by subtracting a duration
   ```ts
   Duration.hours(5).minus({ hours: 2, minutes: 30 }) // 2.5 hours
   ```
 
-- `abs(): Duration`: Returns a new duration instance with the absolute value of the current duration
+- `abs(): Duration`: Returns a Duration with the absolute value of the current duration
   ```ts
   Duration.hours(-2).abs() // 2 hours
   ```
@@ -415,10 +404,7 @@ Duration accepts **only** absolute durations (days, hours, minutes, seconds, mil
 
 - `hours(): number`: Returns the duration in hours
   ```ts
-  // Precise value
   Duration.minutes(150).hours() // 2.5
-  
-  // Rounded value
   Duration.minutes(150).hours({ round: true }) // 3
   ```
 
@@ -452,16 +438,15 @@ The `Interval` class represents a time span between two `DateTime` instances.
 
 Factory methods return a new `Interval` instance.
 
-- `Interval.between(start: DateTimeLike, end: DateTimeLike): Interval`: Returns a new interval instance between two date times
+- `Interval.between(start: DateTimeLike, end: DateTimeLike): Interval`: Returns an Interval between two date times
   ```ts
-  // Creates an interval spanning one day
   Interval.between(
     '2024-01-01T00:00:00.000Z',
     '2024-01-02T00:00:00.000Z'
   )
   ```
 
-- `Interval.days(days: number): Interval`: Returns a new interval instance spanning the specified number of days from now
+- `Interval.days(days: number): Interval`: Returns an Interval spanning the specified number of days from now
   ```ts
   // Creates interval from now to 7 days in future
   Interval.days(7)
@@ -472,38 +457,40 @@ Factory methods return a new `Interval` instance.
 
 #### Instance methods
 
+##### Conversion
+
+- `duration(): Duration`: Returns a Duration representing the length of the interval
+  ```ts
+  interval.duration() // Duration object
+  ```
+
+- `starts(): DateTime`: Returns a DateTime representing the start of the interval
+  ```ts
+  interval.starts() // DateTime object
+  ```
+
+- `ends(): DateTime`: Returns a DateTime representing the end of the interval
+  ```ts
+  interval.ends() // DateTime object
+  ```
+
+- `days(): Array<DateTime>`: Returns an array of DateTimes for each day in the interval
+  ```ts
+  interval.days() // Array<DateTime>
+  ```
+
+##### Comparison
+
+- `contains(dateTime: DateTimeLike): boolean`: Returns true if the interval contains the given date time
+  ```ts
+  interval.contains('2024-01-01T12:00:00.000Z') // true
+  ```
+
 ##### Formatting
 
 - `iso(): string`: Returns the ISO interval string representation
   ```ts
-  // Returns start/end in ISO format
   interval.iso() // "2024-01-01T00:00:00.000Z/2024-01-02T00:00:00.000Z"
-  ```
-
-##### Conversion
-
-- `duration(): Duration`: Returns the duration of the interval
-  ```ts
-  // Returns the time span as a Duration object
-  interval.duration() // Duration representing the interval length
-  ```
-
-- `starts(): DateTime`: Returns the start of the interval
-  ```ts
-  // Returns the starting DateTime
-  interval.starts() // DateTime object
-  ```
-
-- `ends(): DateTime`: Returns the end of the interval
-  ```ts
-  // Returns the ending DateTime
-  interval.ends() // DateTime object
-  ```
-
-- `days(): Array<DateTime>`: Returns an array of DateTime instances for each day in the interval
-  ```ts
-  // Returns array of DateTimes, one per day
-  interval.days() // Array<DateTime>
   ```
 
 ## License

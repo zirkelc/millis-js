@@ -462,6 +462,27 @@ export class DateTime {
   }
 
   /**
+   * Returns true if the current DateTime is before the specified DateTime.
+   */
+  isBefore(dateTime: DateTimeLike): boolean {
+    return this < DateTime.from(dateTime);
+  }
+
+  /**
+   * Returns true if the current DateTime is after the specified DateTime.
+   */
+  isAfter(dateTime: DateTimeLike): boolean {
+    return this > DateTime.from(dateTime);
+  }
+
+  /**
+   * Returns true if the current DateTime is between the specified DateTime.
+   */
+  isBetween(start: DateTimeLike, end: DateTimeLike): boolean {
+    return this.isAfter(start) && this.isBefore(end);
+  }
+
+  /**
    * Returns a new DateTime object set to the start of the specified unit
    */
   private startOf(unit: TimeUnit): DateTime {

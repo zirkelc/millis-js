@@ -608,4 +608,145 @@ describe('DateTime', () => {
       expect(DateTime.from('2024-03-15T12:34:56.789Z')[method]()).toBe(false);
     });
   });
+
+  describe('isBefore()', () => {
+    test('should return true when datetime is before target', () => {
+      // Arrange
+      const earlier = DateTime.from('2024-01-01T00:00:00.000Z');
+      const later = DateTime.from('2024-01-02T00:00:00.000Z');
+
+      // Act
+      const result = earlier.isBefore(later);
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    test('should return false when datetime is after target', () => {
+      // Arrange
+      const earlier = DateTime.from('2024-01-01T00:00:00.000Z');
+      const later = DateTime.from('2024-01-02T00:00:00.000Z');
+
+      // Act
+      const result = later.isBefore(earlier);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    test('should return false when datetime is equal to target', () => {
+      // Arrange
+      const date1 = DateTime.from('2024-01-01T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-01T00:00:00.000Z');
+
+      // Act
+      const result = date1.isBefore(date2);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('isAfter()', () => {
+    test('should return true when datetime is after target', () => {
+      // Arrange
+      const earlier = DateTime.from('2024-01-01T00:00:00.000Z');
+      const later = DateTime.from('2024-01-02T00:00:00.000Z');
+
+      // Act
+      const result = later.isAfter(earlier);
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    test('should return false when datetime is before target', () => {
+      // Arrange
+      const earlier = DateTime.from('2024-01-01T00:00:00.000Z');
+      const later = DateTime.from('2024-01-02T00:00:00.000Z');
+
+      // Act
+      const result = earlier.isAfter(later);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    test('should return false when datetime is equal to target', () => {
+      // Arrange
+      const date1 = DateTime.from('2024-01-01T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-01T00:00:00.000Z');
+
+      // Act
+      const result = date1.isAfter(date2);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('isBetween()', () => {
+    test('should return true when datetime is between start and end', () => {
+      // Arrange
+      const start = DateTime.from('2024-01-01T00:00:00.000Z');
+      const middle = DateTime.from('2024-01-15T12:00:00.000Z');
+      const end = DateTime.from('2024-01-31T23:59:59.999Z');
+
+      // Act
+      const result = middle.isBetween(start, end);
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    test('should return false when datetime is equal to start', () => {
+      // Arrange
+      const start = DateTime.from('2024-01-01T00:00:00.000Z');
+      const end = DateTime.from('2024-01-31T23:59:59.999Z');
+
+      // Act
+      const result = start.isBetween(start, end);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    test('should return false when datetime is equal to end', () => {
+      // Arrange
+      const start = DateTime.from('2024-01-01T00:00:00.000Z');
+      const end = DateTime.from('2024-01-31T23:59:59.999Z');
+
+      // Act
+      const result = end.isBetween(start, end);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    test('should return false when datetime is before start', () => {
+      // Arrange
+      const start = DateTime.from('2024-01-01T00:00:00.000Z');
+      const end = DateTime.from('2024-01-31T23:59:59.999Z');
+      const before = DateTime.from('2023-12-31T23:59:59.999Z');
+
+      // Act
+      const result = before.isBetween(start, end);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    test('should return false when datetime is after end', () => {
+      // Arrange
+      const start = DateTime.from('2024-01-01T00:00:00.000Z');
+      const end = DateTime.from('2024-01-31T23:59:59.999Z');
+      const after = DateTime.from('2024-02-01T00:00:00.000Z');
+
+      // Act
+      const result = after.isBetween(start, end);
+
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
 });

@@ -80,4 +80,11 @@ export class Interval {
 
     return range(0, days).map((day) => this.start.plus({ days: day }));
   }
+
+  /**
+   * Returns true if the Interval contains the specified DateTime.
+   */
+  contains(dateTime: DateTimeLike): boolean {
+    return this.start.isBefore(dateTime) && this.end.isAfter(dateTime);
+  }
 }
