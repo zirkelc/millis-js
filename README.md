@@ -34,7 +34,7 @@ Factory methods return a new `DateTime` instance.
 
 - `DateTime.now(): DateTime`: Returns a new DateTime representing the current UTC time
   ```typescript
-  DateTime.now(); // DateTime object
+  DateTime.now();
   ```
 
 - `DateTime.from(dateTime: DateTimeLike): DateTime`: Returns a new DateTime from a date time like object
@@ -440,19 +440,16 @@ Factory methods return a new `Interval` instance.
 
 - `Interval.between(start: DateTimeLike, end: DateTimeLike): Interval`: Returns an Interval between two date times
   ```ts
-  Interval.between(
-    '2024-01-01T00:00:00.000Z',
-    '2024-01-02T00:00:00.000Z'
-  )
+  Interval.between('2024-01-01T00:00:00.000Z','2024-01-02T00:00:00.000Z') // 2024-01-01T00:00:00.000Z/2024-01-02T00:00:00.000Z
   ```
 
 - `Interval.days(days: number): Interval`: Returns an Interval spanning the specified number of days from now
   ```ts
   // Creates interval from now to 7 days in future
-  Interval.days(7)
+  Interval.days(7) // 2024-01-01T00:00:00.000Z/2024-01-08T00:00:00.000Z
 
   // Creates interval from now to 7 days in past
-  Interval.days(-7)
+  Interval.days(-7) // 2024-01-01T00:00:00.000Z/2023-12-25T00:00:00.000Z
   ```
 
 #### Instance methods
@@ -461,36 +458,36 @@ Factory methods return a new `Interval` instance.
 
 - `duration(): Duration`: Returns a Duration representing the length of the interval
   ```ts
-  interval.duration() // Duration object
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').duration() // 1 day
   ```
 
 - `starts(): DateTime`: Returns a DateTime representing the start of the interval
   ```ts
-  interval.starts() // DateTime object
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').starts() // 2024-01-01T00:00:00.000Z
   ```
 
 - `ends(): DateTime`: Returns a DateTime representing the end of the interval
   ```ts
-  interval.ends() // DateTime object
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').ends() // 2024-01-02T00:00:00.000Z
   ```
 
 - `days(): Array<DateTime>`: Returns an array of DateTimes for each day in the interval
   ```ts
-  interval.days() // Array<DateTime>
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').days() // [2024-01-01T00:00:00.000Z, 2024-01-02T00:00:00.000Z]
   ```
 
 ##### Comparison
 
 - `contains(dateTime: DateTimeLike): boolean`: Returns true if the interval contains the given date time
   ```ts
-  interval.contains('2024-01-01T12:00:00.000Z') // true
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').contains('2024-01-01T12:00:00.000Z') // true
   ```
 
 ##### Formatting
 
 - `iso(): string`: Returns the ISO interval string representation
   ```ts
-  interval.iso() // "2024-01-01T00:00:00.000Z/2024-01-02T00:00:00.000Z"
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').iso() // "2024-01-01T00:00:00.000Z/2024-01-02T00:00:00.000Z"
   ```
 
 ## License
