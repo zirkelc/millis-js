@@ -16,6 +16,7 @@ type StartOfMethods = MethodsWithPrefix<DateTime, 'startOf'>;
 type EndOfMethods = MethodsWithPrefix<DateTime, 'endOf'>;
 type IsStartOfMethods = MethodsWithPrefix<DateTime, 'isStartOf'>;
 type IsEndOfMethods = MethodsWithPrefix<DateTime, 'isEndOf'>;
+type IsSameMethods = MethodsWithPrefix<DateTime, 'isSame'>;
 
 describe('DateTime', () => {
   describe('millis()', () => {
@@ -606,6 +607,93 @@ describe('DateTime', () => {
       // Act & Assert
       expect(dateTime[method]()).toBe(true);
       expect(DateTime.from('2024-03-15T12:34:56.789Z')[method]()).toBe(false);
+    });
+  });
+
+  describe('isSame', () => {
+    test.each<[IsSameMethods, string, string, boolean]>([
+      [
+        'isSameSecond',
+        '2024-03-15T12:34:56.123Z',
+        '2024-03-15T12:34:56.789Z',
+        true,
+      ],
+      [
+        'isSameSecond',
+        '2024-03-15T12:34:56.000Z',
+        '2024-03-15T12:34:57.000Z',
+        false,
+      ],
+      [
+        'isSameMinute',
+        '2024-03-15T12:34:10.000Z',
+        '2024-03-15T12:34:50.000Z',
+        true,
+      ],
+      [
+        'isSameMinute',
+        '2024-03-15T12:34:00.000Z',
+        '2024-03-15T12:35:00.000Z',
+        false,
+      ],
+      [
+        'isSameHour',
+        '2024-03-15T12:10:00.000Z',
+        '2024-03-15T12:50:00.000Z',
+        true,
+      ],
+      [
+        'isSameHour',
+        '2024-03-15T12:00:00.000Z',
+        '2024-03-15T13:00:00.000Z',
+        false,
+      ],
+      [
+        'isSameDay',
+        '2024-03-15T00:00:00.000Z',
+        '2024-03-15T23:59:59.999Z',
+        true,
+      ],
+      [
+        'isSameDay',
+        '2024-03-15T23:59:59.999Z',
+        '2024-03-16T00:00:00.000Z',
+        false,
+      ],
+      [
+        'isSameMonth',
+        '2024-03-01T00:00:00.000Z',
+        '2024-03-31T23:59:59.999Z',
+        true,
+      ],
+      [
+        'isSameMonth',
+        '2024-03-31T23:59:59.999Z',
+        '2024-04-01T00:00:00.000Z',
+        false,
+      ],
+      [
+        'isSameYear',
+        '2024-01-01T00:00:00.000Z',
+        '2024-12-31T23:59:59.999Z',
+        true,
+      ],
+      [
+        'isSameYear',
+        '2024-12-31T23:59:59.999Z',
+        '2025-01-01T00:00:00.000Z',
+        false,
+      ],
+    ])('%s', (method, timestamp1, timestamp2, expected) => {
+      // Arrange
+      const dateTime1 = DateTime.from(timestamp1);
+      const dateTime2 = DateTime.from(timestamp2);
+
+      // Act
+      const result = dateTime1[method](dateTime2);
+
+      // Assert
+      expect(result).toBe(expected);
     });
   });
 

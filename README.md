@@ -187,6 +187,36 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
   DateTime.from('2024-01-01T12:30:15.000Z').isBetween('2024-01-01T12:30:14.000Z', '2024-01-01T12:30:16.000Z') // true
   ```
 
+- `isSameSecond(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is in the same second as the given DateTime
+  ```ts
+  DateTime.from('2024-01-01T12:30:15.123Z').isSameSecond('2024-01-01T12:30:15.456Z') // true
+  ```
+
+- `isSameMinute(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is in the same minute as the given DateTime
+  ```ts
+  DateTime.from('2024-01-01T12:30:15.000Z').isSameMinute('2024-01-01T12:30:45.000Z') // true
+  ```
+
+- `isSameHour(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is in the same hour as the given DateTime
+  ```ts
+  DateTime.from('2024-01-01T12:30:00.000Z').isSameHour('2024-01-01T12:45:00.000Z') // true
+  ```
+
+- `isSameDay(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is in the same day as the given DateTime
+  ```ts
+  DateTime.from('2024-01-01T12:00:00.000Z').isSameDay('2024-01-01T23:59:59.999Z') // true
+  ```
+
+- `isSameMonth(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is in the same month as the given DateTime
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').isSameMonth('2024-01-31T23:59:59.999Z') // true
+  ```
+
+- `isSameYear(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is in the same year as the given DateTime
+  ```ts
+  DateTime.from('2024-01-01T00:00:00.000Z').isSameYear('2024-12-31T23:59:59.999Z') // true
+  ```
+
 - `isStartOfYear(): boolean`: Returns true if the current DateTime is at the start of the year
   ```ts
   DateTime.from('2024-01-01T00:00:00.000Z').isStartOfYear() // true

@@ -462,6 +462,48 @@ export class DateTime {
   }
 
   /**
+   * Checks if the current DateTime is in the same second as the given DateTime
+   */
+  isSameSecond(dateTime: DateTimeLike): boolean {
+    return this.isSame(dateTime, 'second');
+  }
+
+  /**
+   * Checks if the current DateTime is in the same minute as the given DateTime
+   */
+  isSameMinute(dateTime: DateTimeLike): boolean {
+    return this.isSame(dateTime, 'minute');
+  }
+
+  /**
+   * Checks if the current DateTime is in the same hour as the given DateTime
+   */
+  isSameHour(dateTime: DateTimeLike): boolean {
+    return this.isSame(dateTime, 'hour');
+  }
+
+  /**
+   * Checks if the current DateTime is in the same day as the given DateTime
+   */
+  isSameDay(dateTime: DateTimeLike): boolean {
+    return this.isSame(dateTime, 'day');
+  }
+
+  /**
+   * Checks if the current DateTime is in the same month as the given DateTime
+   */
+  isSameMonth(dateTime: DateTimeLike): boolean {
+    return this.isSame(dateTime, 'month');
+  }
+
+  /**
+   * Checks if the current DateTime is in the same year as the given DateTime
+   */
+  isSameYear(dateTime: DateTimeLike): boolean {
+    return this.isSame(dateTime, 'year');
+  }
+
+  /**
    * Returns true if the current DateTime is before the specified DateTime.
    */
   isBefore(dateTime: DateTimeLike): boolean {
@@ -630,6 +672,14 @@ export class DateTime {
    */
   private isEndOf(unit: TimeUnit): boolean {
     return this.millis() === this.endOf(unit).millis();
+  }
+
+  /**
+   * Checks if the current DateTime is in the same time unit as the given DateTime
+   */
+  private isSame(dateTime: DateTimeLike, unit: TimeUnit): boolean {
+    const other = DateTime.from(dateTime);
+    return this.startOf(unit).millis() === other.startOf(unit).millis();
   }
 
   private absoluteDuration(duration: AbsoluteDuration): Milliseconds {
