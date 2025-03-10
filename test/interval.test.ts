@@ -85,6 +85,136 @@ describe('Interval', () => {
       });
     });
 
+    describe('days()', () => {
+      test('should return array of days for same day interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-01T23:59:59.999Z',
+        );
+
+        // Act
+        const days = interval.days();
+
+        // Assert
+        expect(days).toHaveLength(1);
+        expect(days[0].dayOfYear()).toBe(1);
+      });
+
+      test('should return array of days for one day interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const days = interval.days();
+
+        // Assert
+        expect(days).toHaveLength(1);
+        expect(days[0].dayOfYear()).toBe(1);
+      });
+
+      test('should return array of days for two day interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T23:59:59.999Z',
+        );
+
+        // Act
+        const days = interval.days();
+
+        // Assert
+        expect(days).toHaveLength(2);
+        expect(days[0].dayOfYear()).toBe(1);
+        expect(days[1].dayOfYear()).toBe(2);
+      });
+
+      test('should return array of days for three day interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-03T23:59:59.999Z',
+        );
+
+        // Act
+        const days = interval.days();
+
+        // Assert
+        expect(days).toHaveLength(3);
+        expect(days[0].dayOfYear()).toBe(1);
+        expect(days[1].dayOfYear()).toBe(2);
+        expect(days[2].dayOfYear()).toBe(3);
+      });
+    });
+
+    describe('years()', () => {
+      test('should return array years for same year interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-12-31T23:59:59.999Z',
+        );
+
+        // Act
+        const years = interval.years();
+
+        // Assert
+        expect(years).toHaveLength(1);
+        expect(years[0].year()).toBe(2024);
+      });
+
+      test('should return array of years for one year interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2025-01-01T00:00:00.000Z',
+        );
+
+        // Act
+        const years = interval.years();
+
+        // Assert
+        expect(years).toHaveLength(1);
+        expect(years[0].year()).toBe(2024);
+      });
+
+      test('should return array of years for two year interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2025-12-31T23:59:59.999Z',
+        );
+
+        // Act
+        const years = interval.years();
+
+        // Assert
+        expect(years).toHaveLength(2);
+        expect(years[0].year()).toBe(2024);
+        expect(years[1].year()).toBe(2025);
+      });
+
+      test('should return array of years for three year interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2026-12-31T23:59:59.999Z',
+        );
+
+        // Act
+        const years = interval.years();
+
+        // Assert
+        expect(years).toHaveLength(3);
+        expect(years[0].year()).toBe(2024);
+        expect(years[1].year()).toBe(2025);
+        expect(years[2].year()).toBe(2026);
+      });
+    });
+
     describe('iso()', () => {
       test('should return ISO string representation', () => {
         // Arrange

@@ -74,11 +74,47 @@ export class Interval {
 
   /**
    * Returns an array of DateTime objects for each day in the interval, going from start to end.
+   * The day of the end date is only included if it is not exactly at the start of a day.
+   *
+   * @example
+   * - `2024-01-01T00:00:00.000Z` to `2024-01-02T00:00:00.000Z` will include only `2024-01-01`
+   * - `2024-01-01T00:00:00.000Z` to `2024-01-02T23:59:59.999Z` will include both `2024-01-01` and `2024-01-02`
    */
   days(): Array<DateTime> {
-    const days = this.duration().days({ round: 'up' });
+    const startDate = this.start;
 
-    return range(0, days).map((day) => this.start.plus({ days: day }));
+    // If end time is exactly at the start of a day, don't include that day
+    const endDate = this.end.isStartOfDay()
+      ? this.end.minus({ millis: 1 })
+      : this.end;
+
+    // Use Duration.between to calculate the difference because days cannot be subtracted in the same way as years
+    const days = Duration.between(startDate, endDate).days({
+      round: 'down',
+    });
+
+    return range(0, days + 1).map((day) => startDate.plus({ days: day }));
+  }
+
+  /**
+   * Returns an array of DateTime objects for each year in the interval, going from start to end.
+   * The year of the end date is only included if it is not exactly at the start of a year.
+   *
+   * @example
+   * - `2024-01-01T00:00:00.000Z` to `2025-01-01T00:00:00.000Z` will include only `2024`
+   * - `2024-01-01T00:00:00.000Z` to `2025-01-01T23:59:59.999Z` will include both `2024` and `2025`
+   */
+  years(): Array<DateTime> {
+    const startDate = this.start;
+
+    // If end date is exactly at the start of a year, don't include that year
+    const endDate = this.end.isStartOfYear()
+      ? this.end.minus({ millis: 1 })
+      : this.end;
+
+    const years = endDate.year() - startDate.year();
+
+    return range(0, years + 1).map((year) => startDate.plus({ years: year }));
   }
 
   /**

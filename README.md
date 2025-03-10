@@ -488,22 +488,27 @@ Factory methods return a new `Interval` instance.
 
 - `duration(): Duration`: Returns a Duration representing the length of the interval
   ```ts
-  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').duration() // 1 day
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').duration() // 2 days
   ```
 
 - `starts(): DateTime`: Returns a DateTime representing the start of the interval
   ```ts
-  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').starts() // 2024-01-01T00:00:00.000Z
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').starts() // 2024-01-01T00:00:00.000Z
   ```
 
 - `ends(): DateTime`: Returns a DateTime representing the end of the interval
   ```ts
-  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').ends() // 2024-01-02T00:00:00.000Z
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').ends() // 2024-01-02T23:59:59.999Z
   ```
 
 - `days(): Array<DateTime>`: Returns an array of DateTimes for each day in the interval
   ```ts
-  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').days() // [2024-01-01T00:00:00.000Z, 2024-01-02T00:00:00.000Z]
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').days() // [2024-01-01T00:00:00.000Z, 2024-01-02T23:59:59.999Z]
+  ```
+
+- `years(): Array<DateTime>`: Returns an array of DateTimes for each year in the interval
+  ```ts
+  Interval.between('2024-01-01T00:00:00.000Z', '2025-01-01T23:59:59.999Z').years() // [2024-01-01T00:00:00.000Z, 2025-01-01T23:59:59.999Z]
   ```
 
 ##### Comparison
