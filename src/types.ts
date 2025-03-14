@@ -16,7 +16,7 @@ export type RelativeDuration = {
 
 export type DurationComponents = AbsoluteDuration & RelativeDuration;
 
-export type DurationLike = Milliseconds | DurationComponents | Duration;
+export type DurationLike = number | DurationComponents | Duration;
 
 export type OrdinalDate = {
   year: number;
@@ -36,11 +36,11 @@ export type TimeComponents = {
 
 export type DateTimeFormat = 'YYYY' | 'YYYY-MM-DD' | 'YYYY-DDD' | 'HH:mm:ss';
 
-export type DateTimeFormats = {
-  [K in DateTimeFormat]: { [P in K]: string } & {
-    [P in Exclude<DateTimeFormat, K>]?: never;
-  };
-}[DateTimeFormat];
+// export type DateTimeFormats = {
+//   [K in DateTimeFormat]: { [P in K]: string } & {
+//     [P in Exclude<DateTimeFormat, K>]?: never;
+//   };
+// }[DateTimeFormat];
 
 export type DateTimeComponents =
   | (OrdinalDate & Partial<TimeComponents>)
@@ -49,16 +49,8 @@ export type DateTimeComponents =
 export type DateLike = { getTime(): number };
 
 export type DateTimeLike =
-  | ISO
-  | Milliseconds
+  | number
+  | string
   | DateTime
   | DateLike
-  | DateTimeComponents
-  | DateTimeFormats;
-
-export type Milliseconds = number;
-export type Seconds = number;
-export type Minutes = number;
-export type Hours = number;
-export type Days = number;
-export type ISO = string;
+  | DateTimeComponents;

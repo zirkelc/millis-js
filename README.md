@@ -42,8 +42,10 @@ Factory methods return a new `DateTime` instance.
   // From milliseconds timestamp
   DateTime.from(1_704_067_200_000);
 
-  // From ISO string (UTC)
-  DateTime.from('2024-01-01T00:00:00.000Z');
+  // From strings
+  DateTime.from('2024-01-01T00:00:00.000Z'); // ISO
+  DateTime.from('2024-01-01'); // YYYY-MM-DD
+  DateTime.from('2024-001'); // YYYY-DDD
 
   // From Date object
   DateTime.from(new Date());
@@ -68,11 +70,6 @@ Factory methods return a new `DateTime` instance.
     dayOfYear: 1,
     hour: 12        // optional, etc.
   });
-
-  // From format strings
-  DateTime.from({ 'YYYY': '2024' });
-  DateTime.from({ 'YYYY-MM-DD': '2024-01-01' });
-  DateTime.from({ 'YYYY-DDD': '2024-001' });
   ```
 
 - `DateTime.until(dateTime: DateTimeLike): Interval`: Returns an Interval from the current time to a given date time

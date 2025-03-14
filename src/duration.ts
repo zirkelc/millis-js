@@ -1,13 +1,5 @@
 import { DateTime } from './datetime.js';
-import type {
-  AbsoluteDuration,
-  DateTimeLike,
-  Days,
-  Hours,
-  Milliseconds,
-  Minutes,
-  Seconds,
-} from './types.js';
+import type { AbsoluteDuration, DateTimeLike } from './types.js';
 
 /**
  * Duration options
@@ -26,9 +18,9 @@ type DurationOptions = {
  * A `Duration` represents a length of time.
  */
 export class Duration {
-  private value: Milliseconds;
+  private value: number;
 
-  private constructor(value: Milliseconds) {
+  private constructor(value: number) {
     this.value = value;
   }
 
@@ -36,14 +28,14 @@ export class Duration {
    * Creates a `Duration` object from an absolute duration.
    * @deprecated Use `Duration.from` instead.
    */
-  static of(duration: AbsoluteDuration) {
+  static of(duration: AbsoluteDuration): Duration {
     return Duration.from(duration);
   }
 
   /**
    * Creates a `Duration` object from an absolute duration.
    */
-  static from(duration: AbsoluteDuration) {
+  static from(duration: AbsoluteDuration): Duration {
     const millis =
       (duration.millis || 0) +
       (duration.seconds || 0) * 1_000 +
@@ -110,14 +102,14 @@ export class Duration {
   /**
    * Returns the number of milliseconds of the `Duration` object.
    */
-  millis(): Milliseconds {
+  millis(): number {
     return this.value;
   }
 
   /**
    * Returns the number of seconds of the `Duration` object.
    */
-  seconds(options?: DurationOptions): Seconds {
+  seconds(options?: DurationOptions): number {
     const value = this.millis() / 1_000;
     return this.return(value, options);
   }
@@ -125,7 +117,7 @@ export class Duration {
   /**
    * Returns the number of minutes of the `Duration` object.
    */
-  minutes(options?: DurationOptions): Minutes {
+  minutes(options?: DurationOptions): number {
     const value = this.millis() / (60 * 1_000);
     return this.return(value, options);
   }
@@ -133,7 +125,7 @@ export class Duration {
   /**
    * Returns the number of hours of the `Duration` object.
    */
-  hours(options?: DurationOptions): Hours {
+  hours(options?: DurationOptions): number {
     const value = this.millis() / (60 * 60 * 1_000);
     return this.return(value, options);
   }
@@ -141,7 +133,7 @@ export class Duration {
   /**
    * Returns the number of days of the `Duration` object.
    */
-  days(options?: DurationOptions): Days {
+  days(options?: DurationOptions): number {
     const value = this.millis() / (24 * 60 * 60 * 1_000);
 
     return this.return(value, options);
@@ -176,21 +168,21 @@ export class Duration {
   /**
    * Returns a new `Duration` object by adding a duration to the current `Duration` object.
    */
-  plus(duration: AbsoluteDuration) {
+  plus(duration: AbsoluteDuration): Duration {
     return new Duration(this.millis() + Duration.from(duration).millis());
   }
 
   /**
    * Returns a new `Duration` object by subtracting a duration from the current `Duration` object.
    */
-  minus(duration: AbsoluteDuration) {
+  minus(duration: AbsoluteDuration): Duration {
     return new Duration(this.millis() - Duration.from(duration).millis());
   }
 
   /**
    * Returns a new `Duration` object with the absolute value of the current `Duration` object.
    */
-  abs() {
+  abs(): Duration {
     return new Duration(Math.abs(this.millis()));
   }
 

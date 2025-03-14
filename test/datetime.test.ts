@@ -35,27 +35,71 @@ describe('DateTime', () => {
   });
 
   describe('from()', () => {
-    test('should create datetime from ISO string', () => {
-      const isoString = '2024-01-01T00:00:00.000Z';
-      const date = new Date(isoString);
-      const dateTime = DateTime.from(isoString);
+    describe('string', () => {
+      test('should create datetime from ISO format', () => {
+        const isoString = '2024-01-01T00:00:00.000Z';
+        const date = new Date(isoString);
+        const dateTime = DateTime.from(isoString);
 
-      expect(dateTime.millis()).toBe(date.getTime());
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should create datetime from YYYY format', () => {
+        const str = '2024';
+        const date = new Date(str);
+        const dateTime = DateTime.from(str);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should create datetime from YYYY-MM-DD format', () => {
+        const str = '2024-02-29';
+        const date = new Date(str);
+        const dateTime = DateTime.from(str);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should create datetime from YYYY-DDD format', () => {
+        const str = '2024-060';
+        const date = new Date(Date.UTC(2024, 1, 29));
+        const dateTime = DateTime.from(str);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should throw error for invalid format', () => {
+        const result = () => DateTime.from('20240229');
+        expect(result).toThrow();
+      });
     });
 
-    test('should create datetime from milliseconds', () => {
-      const isoString = '2024-01-01T00:00:00.000Z';
-      const date = new Date(isoString);
-      const dateTime = DateTime.from(date.getTime());
+    describe('number', () => {
+      test('should create datetime from milliseconds', () => {
+        const isoString = '2024-01-01T00:00:00.000Z';
+        const date = new Date(isoString);
+        const dateTime = DateTime.from(date.getTime());
 
-      expect(dateTime.millis()).toBe(date.getTime());
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
     });
 
-    test('should create datetime from another datetime instance', () => {
-      const original = DateTime.from('2024-01-01T00:00:00.000Z');
-      const copy = DateTime.from(original);
+    describe('date', () => {
+      test('should create datetime from date instance', () => {
+        const date = new Date('2024-01-01T00:00:00.000Z');
+        const dateTime = DateTime.from(date);
 
-      expect(copy.millis()).toBe(original.millis());
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+    });
+
+    describe('datetime', () => {
+      test('should create datetime from another datetime instance', () => {
+        const original = DateTime.from('2024-01-01T00:00:00.000Z');
+        const copy = DateTime.from(original);
+
+        expect(copy.millis()).toBe(original.millis());
+      });
     });
 
     describe('object', () => {
@@ -112,27 +156,27 @@ describe('DateTime', () => {
         expect(result).toThrow();
       });
     });
-    describe('format', () => {
-      test('should create datetime from format object YYYY', () => {
-        const dateTime = DateTime.from({ YYYY: '2024' });
-        expect(dateTime.year()).toBe(2024);
-      });
+    // describe('format', () => {
+    //   test('should create datetime from format object YYYY', () => {
+    //     const dateTime = DateTime.from({ YYYY: '2024' });
+    //     expect(dateTime.year()).toBe(2024);
+    //   });
 
-      test('should create datetime from format object YYYY-MM-DD', () => {
-        const dateTime = DateTime.from({ 'YYYY-MM-DD': '2024-02-29' });
-        expect(dateTime.iso()).toBe('2024-02-29T00:00:00.000Z');
-      });
+    //   test('should create datetime from format object YYYY-MM-DD', () => {
+    //     const dateTime = DateTime.from({ 'YYYY-MM-DD': '2024-02-29' });
+    //     expect(dateTime.iso()).toBe('2024-02-29T00:00:00.000Z');
+    //   });
 
-      test('should create datetime from format object YYYY-DDD', () => {
-        const dateTime = DateTime.from({ 'YYYY-DDD': '2024-060' });
-        expect(dateTime.iso()).toBe('2024-02-29T00:00:00.000Z');
-      });
+    //   test('should create datetime from format object YYYY-DDD', () => {
+    //     const dateTime = DateTime.from({ 'YYYY-DDD': '2024-060' });
+    //     expect(dateTime.iso()).toBe('2024-02-29T00:00:00.000Z');
+    //   });
 
-      test('should throw error for invalid format', () => {
-        const result = () => DateTime.from({ 'YYYY-M-D': '2024-02-29' } as any);
-        expect(result).toThrow();
-      });
-    });
+    //   test('should throw error for invalid format', () => {
+    //     const result = () => DateTime.from({ 'YYYY-M-D': '2024-02-29' } as any);
+    //     expect(result).toThrow();
+    //   });
+    // });
   });
 
   describe('plus()', () => {

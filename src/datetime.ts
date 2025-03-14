@@ -3,33 +3,35 @@ import { Interval } from './interval.js';
 import type {
   AbsoluteDuration,
   DateTimeFormat,
-  Days,
+  DateTimeLike,
   DurationLike,
-  Hours,
-  Minutes,
   RelativeDuration,
 } from './types.js';
-import type { DateTimeLike, ISO, Seconds } from './types.js';
-import type { Milliseconds } from './types.js';
 import { pad, parseNumber } from './utils.js';
 
 type FormatLike = DateTimeFormat | Intl.DateTimeFormat;
 type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
 
+const YYYY_REGEX = /^\d{4}$/;
+const YYYY_MM_DD_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const YYYY_DDD_REGEX = /^\d{4}-\d{3}$/;
+
 /**
  * A `DateTime` represents a point in time.
  */
 export class DateTime {
-  private value: Milliseconds;
+  private value: number;
 
-  private constructor(value: Milliseconds) {
+  private constructor(value: number) {
+    if (Number.isNaN(value)) throw new Error('Invalid date time');
+
     this.value = value;
   }
 
   /**
    * Returns the number of milliseconds elapsed since midnight, January 1, 1970 Universal Coordinated Time (UTC).
    */
-  static millis(): Milliseconds {
+  static millis(): number {
     return Date.now();
   }
 
@@ -47,8 +49,34 @@ export class DateTime {
     // Milliseconds
     if (typeof dateTime === 'number') return new DateTime(dateTime);
 
-    // ISO
-    if (typeof dateTime === 'string') return new DateTime(Date.parse(dateTime));
+    // String
+    if (typeof dateTime === 'string') {
+      const str = dateTime.trim();
+      const length = str.length;
+
+      switch (length) {
+        case 4:
+          // YYYY
+          if (YYYY_REGEX.test(str)) return new DateTime(Date.parse(dateTime));
+          break;
+
+        case 10:
+          // YYYY-MM-DD
+          if (YYYY_MM_DD_REGEX.test(str))
+            return new DateTime(Date.parse(dateTime));
+          break;
+        case 8:
+          // YYYY-DDD
+          if (YYYY_DDD_REGEX.test(str)) {
+            const [year, dayOfYear] = str.split('-').map((s) => parseNumber(s));
+            return DateTime.from({ year, dayOfYear });
+          }
+          break;
+        default:
+          // ISO
+          return new DateTime(Date.parse(dateTime));
+      }
+    }
 
     // Date instance
     if (
@@ -113,25 +141,25 @@ export class DateTime {
         return new DateTime(date.getTime());
       }
 
-      if (Object.keys(dateTime).length === 1) {
-        const [format] = Object.keys(dateTime) as [DateTimeFormat];
-        const value = dateTime[format];
-        if (value === undefined) throw new Error('Invalid date time');
+      // if (Object.keys(dateTime).length === 1) {
+      //   const [format] = Object.keys(dateTime) as [DateTimeFormat];
+      //   const value = dateTime[format];
+      //   if (value === undefined) throw new Error('Invalid date time');
 
-        switch (format) {
-          case 'YYYY':
-            return new DateTime(Date.parse(value));
-          case 'YYYY-MM-DD':
-            return new DateTime(Date.parse(value));
-          case 'YYYY-DDD': {
-            const [year, dayOfYear] = value
-              .split('-')
-              .map((s) => parseNumber(s));
+      //   switch (format) {
+      //     case 'YYYY':
+      //       return new DateTime(Date.parse(value));
+      //     case 'YYYY-MM-DD':
+      //       return new DateTime(Date.parse(value));
+      //     case 'YYYY-DDD': {
+      //       const [year, dayOfYear] = value
+      //         .split('-')
+      //         .map((s) => parseNumber(s));
 
-            return DateTime.from({ year, dayOfYear });
-          }
-        }
-      }
+      //       return DateTime.from({ year, dayOfYear });
+      //     }
+      //   }
+      // }
     }
 
     throw new Error('Invalid date time');
@@ -147,7 +175,7 @@ export class DateTime {
   /**
    * Formats the DateTime according to the specified format
    */
-  format(format: FormatLike) {
+  format(format: FormatLike): string {
     if (format instanceof Intl.DateTimeFormat)
       return format.format(this.date());
 
@@ -169,21 +197,21 @@ export class DateTime {
   /**
    * Returns the number of milliseconds of the DateTime object.
    */
-  millis(): Milliseconds {
+  millis(): number {
     return this.value;
   }
 
   /**
    * Returns the ISO string representation of the DateTime object.
    */
-  iso(): ISO {
+  iso(): string {
     return new Date(this.millis()).toISOString();
   }
 
   /**
    * Returns the number of seconds since the Unix Epoch. The value is floored to the nearest integer.
    */
-  timestamp(): Seconds {
+  timestamp(): number {
     return Math.floor(this.millis() / 1_000);
   }
 
@@ -682,9 +710,12 @@ export class DateTime {
     return this.startOf(unit).millis() === other.startOf(unit).millis();
   }
 
-  private absoluteDuration(duration: AbsoluteDuration): Milliseconds {
+  /**
+   * Calculates the absolute duration in milliseconds between the current DateTime and the absolute duration.
+   */
+  private absoluteDuration(duration: AbsoluteDuration): number {
     const { millis, seconds, minutes, hours, days } = duration;
-    return Duration.of({ millis, seconds, minutes, hours, days }).millis();
+    return Duration.from({ millis, seconds, minutes, hours, days }).millis();
   }
 
   /**
@@ -694,10 +725,7 @@ export class DateTime {
    * If minus is false, the duration is added to the current DateTime.
    * In other words, are we going back in time or forward in time?
    */
-  private relativeDuration(
-    duration: RelativeDuration,
-    minus: boolean,
-  ): Milliseconds {
+  private relativeDuration(duration: RelativeDuration, minus: boolean): number {
     const { months = 0, years = 0 } = duration;
 
     const currentDate = this.date();
@@ -723,6 +751,6 @@ export class DateTime {
     // Restore the day, but don't exceed the days in the target month
     targetDate.setUTCDate(Math.min(currentDay, daysInMonth));
 
-    return Math.abs(Duration.diff(currentDate, targetDate).millis());
+    return Math.abs(Duration.between(currentDate, targetDate).millis());
   }
 }
