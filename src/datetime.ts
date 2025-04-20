@@ -557,8 +557,19 @@ export class DateTime {
   }
 
   /**
-   * Returns a comparison value of two DateTime objects to be used in sorting.
-   * The result is negative if a is before b, positive if a is after b, and 0 if a and b are the same.
+   * Returns a comparison value of the current DateTime object to the given DateTime object to be used in sorting.
+   * The result is:
+   * - negative (< 0) if the current DateTime object is before the given DateTime object (a < b)
+   * - positive (> 0) if the current DateTime object is after the given DateTime object (a > b)
+   * - zero (0) if the current DateTime object and the given DateTime object are the same (a === b)
+   *
+   * @example
+   * const dates = [
+   *   DateTime.from('2024-01-02T00:00:00.000Z'),
+   *   DateTime.from('2024-01-01T00:00:00.000Z'),
+   * ];
+   *
+   * dates.sort((a, b) => a.compare(b));
    */
   compare(dateTime: DateTimeLike): number {
     return this.millis() - DateTime.from(dateTime).millis();
