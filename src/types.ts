@@ -16,7 +16,7 @@ export type RelativeDuration = {
 
 export type DurationComponents = AbsoluteDuration & RelativeDuration;
 
-export type DurationLike = number | DurationComponents | Duration;
+export type DurationLike = number | AbsoluteDuration | Duration;
 
 export type OrdinalDate = {
   year: number;

@@ -280,7 +280,9 @@ export class DateTime {
   /**
    * Returns a new DateTime object by adding a duration to the current DateTime object.
    */
-  plus(duration: DurationLike) {
+  plus(
+    duration: number | (AbsoluteDuration & RelativeDuration) | Duration,
+  ): DateTime {
     const millis =
       typeof duration === 'number'
         ? duration
@@ -295,7 +297,9 @@ export class DateTime {
   /**
    * Returns a new DateTime object by subtracting a duration from the current DateTime object.
    */
-  minus(duration: DurationLike) {
+  minus(
+    duration: number | (AbsoluteDuration & RelativeDuration) | Duration,
+  ): DateTime {
     const millis =
       typeof duration === 'number'
         ? duration
@@ -550,6 +554,14 @@ export class DateTime {
    */
   isBetween(start: DateTimeLike, end: DateTimeLike): boolean {
     return this.isAfter(start) && this.isBefore(end);
+  }
+
+  /**
+   * Returns a comparison value of two DateTime objects to be used in sorting.
+   * The result is negative if a is before b, positive if a is after b, and 0 if a and b are the same.
+   */
+  compare(dateTime: DateTimeLike): number {
+    return this.millis() - DateTime.from(dateTime).millis();
   }
 
   /**

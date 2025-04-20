@@ -1,5 +1,5 @@
 import { DateTime } from './datetime.js';
-import type { AbsoluteDuration, DateTimeLike } from './types.js';
+import type { AbsoluteDuration, DateTimeLike, DurationLike } from './types.js';
 
 /**
  * Duration options
@@ -35,7 +35,14 @@ export class Duration {
   /**
    * Creates a `Duration` object from an absolute duration.
    */
-  static from(duration: AbsoluteDuration): Duration {
+  static from(duration: DurationLike): Duration {
+    // Milliseconds
+    if (typeof duration === 'number') return new Duration(duration);
+
+    // Duration instance
+    if (duration instanceof Duration) return new Duration(duration.millis());
+
+    // Absolute duration
     const millis =
       (duration.millis || 0) +
       (duration.seconds || 0) * 1_000 +

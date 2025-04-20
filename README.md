@@ -274,6 +274,15 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
   DateTime.from('2024-03-15T12:34:56.999Z').isEndOfSecond() // true
   ```
 
+- `compare(dateTime: DateTimeLike): number`: Returns a comparison value of two DateTime objects to be used in sorting
+  ```ts
+  [
+    DateTime.from('2024-01-31T00:00:00.000Z'),
+    DateTime.from('2024-01-02T00:00:00.000Z'),
+    DateTime.from('2024-01-31T00:00:00.000Z'),
+  ].sort((a, b) => a.compare(b)) // [2024-01-01T00:00:00.000Z, 2024-01-02T00:00:00.000Z, 2024-01-31T00:00:00.000Z]
+  ```
+
 ##### Formatting
 
 - `iso(): string`: Returns the ISO string representation

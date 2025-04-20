@@ -881,4 +881,43 @@ describe('DateTime', () => {
       expect(result).toBe(false);
     });
   });
+
+  describe('compare()', () => {
+    test('should return 0 if the datetimes are the same', () => {
+      const date1 = DateTime.from('2024-01-01T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-01T00:00:00.000Z');
+
+      expect(date1.compare(date2)).toBe(0);
+    });
+
+    test('should return negative value if the first datetime is before the second', () => {
+      const date1 = DateTime.from('2024-01-01T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-02T00:00:00.000Z');
+
+      expect(date1.compare(date2)).toBeLessThan(0);
+    });
+
+    test('should return positive value if the first datetime is after the second', () => {
+      const date1 = DateTime.from('2024-01-02T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-01T00:00:00.000Z');
+
+      expect(date1.compare(date2)).toBeGreaterThan(0);
+    });
+
+    test('should sort datetimes in ascending order', () => {
+      const datetimes = [
+        DateTime.from('2024-01-03T00:00:00.000Z'),
+        DateTime.from('2024-01-02T00:00:00.000Z'),
+        DateTime.from('2024-01-01T00:00:00.000Z'),
+      ];
+
+      datetimes.sort((a, b) => a.compare(b));
+
+      expect(datetimes).toEqual([
+        DateTime.from('2024-01-01T00:00:00.000Z'),
+        DateTime.from('2024-01-02T00:00:00.000Z'),
+        DateTime.from('2024-01-03T00:00:00.000Z'),
+      ]);
+    });
+  });
 });
