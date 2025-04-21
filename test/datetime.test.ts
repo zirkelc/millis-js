@@ -882,6 +882,21 @@ describe('DateTime', () => {
     });
   });
 
+  describe('equals()', () => {
+    test('should return true if the datetimes are the same', () => {
+      const date1 = DateTime.from('2024-01-01T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-01T00:00:00.000Z');
+
+      expect(date1.equals(date2)).toBe(true);
+    });
+
+    test('should return false if the datetimes are different', () => {
+      const date1 = DateTime.from('2024-01-01T00:00:00.000Z');
+      const date2 = DateTime.from('2024-01-02T00:00:00.000Z');
+
+      expect(date1.equals(date2)).toBe(false);
+    });
+  });
   describe('compare()', () => {
     test('should return 0 if the datetimes are the same', () => {
       const date1 = DateTime.from('2024-01-01T00:00:00.000Z');

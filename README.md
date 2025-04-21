@@ -169,6 +169,20 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
 
 ##### Comparison
 
+- `equals(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is equal to the given date time
+  ```ts
+  DateTime.from('2024-01-01T12:30:15.000Z').equals(DateTime.from('2024-01-01T12:30:15.000Z')) // true
+  ```
+
+- `compare(dateTime: DateTimeLike): number`: Returns a comparison value of two DateTime objects to be used in sorting
+  ```ts
+  [
+    DateTime.from('2024-01-31T00:00:00.000Z'),
+    DateTime.from('2024-01-02T00:00:00.000Z'),
+    DateTime.from('2024-01-31T00:00:00.000Z'),
+  ].sort((a, b) => a.compare(b)) // [2024-01-01T00:00:00.000Z, 2024-01-02T00:00:00.000Z, 2024-01-31T00:00:00.000Z]
+  ```
+
 - `isBefore(dateTime: DateTimeLike): boolean`: Returns true if the current DateTime is before the given date time
   ```ts
   DateTime.from('2024-01-01T12:30:15.000Z').isBefore('2024-01-01T12:30:16.000Z') // true
@@ -272,15 +286,6 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
 - `isEndOfSecond(): boolean`: Returns true if the current DateTime is at the end of the second
   ```ts
   DateTime.from('2024-03-15T12:34:56.999Z').isEndOfSecond() // true
-  ```
-
-- `compare(dateTime: DateTimeLike): number`: Returns a comparison value of two DateTime objects to be used in sorting
-  ```ts
-  [
-    DateTime.from('2024-01-31T00:00:00.000Z'),
-    DateTime.from('2024-01-02T00:00:00.000Z'),
-    DateTime.from('2024-01-31T00:00:00.000Z'),
-  ].sort((a, b) => a.compare(b)) // [2024-01-01T00:00:00.000Z, 2024-01-02T00:00:00.000Z, 2024-01-31T00:00:00.000Z]
   ```
 
 ##### Formatting

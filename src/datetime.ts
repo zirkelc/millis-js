@@ -557,6 +557,13 @@ export class DateTime {
   }
 
   /**
+   * Returns true if the current DateTime is equal to the specified DateTime.
+   */
+  equals(dateTime: DateTimeLike): boolean {
+    return this.millis() === DateTime.from(dateTime).millis();
+  }
+
+  /**
    * Returns a comparison value of the current DateTime object to the given DateTime object to be used in sorting.
    * The result is:
    * - negative (< 0) if the current DateTime object is before the given DateTime object (a < b)
