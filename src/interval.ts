@@ -62,6 +62,13 @@ export class Interval {
   }
 
   /**
+   * Returns a new Interval with the start and end dates reversed.
+   */
+  reverse(): Interval {
+    return new Interval(this.end, this.start);
+  }
+
+  /**
    * Returns the ISO string representation of the interval.
    */
   iso(): string {

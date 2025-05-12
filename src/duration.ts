@@ -39,6 +39,10 @@ export class Duration {
     // Milliseconds
     if (typeof duration === 'number') return new Duration(duration);
 
+    // TODO: support string durations like 1ms, 1s, 1m, 1h, 1d or ISO strings
+    // if (typeof duration === 'string')
+    //   return new Duration(parseDuration(duration));
+
     // Duration instance
     if (duration instanceof Duration) return new Duration(duration.millis());
 

@@ -69,6 +69,55 @@ describe('Interval', () => {
   });
 
   describe('instance', () => {
+    describe('starts()', () => {
+      test('should return start date', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const start = interval.starts();
+
+        // Assert
+        expect(start.iso()).toBe('2024-01-01T00:00:00.000Z');
+      });
+    });
+
+    describe('ends()', () => {
+      test('should return end date', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const end = interval.ends();
+
+        // Assert
+        expect(end.iso()).toBe('2024-01-02T00:00:00.000Z');
+      });
+    });
+
+    describe('reverse()', () => {
+      test('should return reversed interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-02T00:00:00.000Z',
+        );
+
+        // Act
+        const reversed = interval.reverse();
+
+        // Assert
+        expect(reversed.starts().iso()).toBe('2024-01-02T00:00:00.000Z');
+        expect(reversed.ends().iso()).toBe('2024-01-01T00:00:00.000Z');
+      });
+    });
+
     describe('duration()', () => {
       test('should return duration between start and end', () => {
         // Arrange

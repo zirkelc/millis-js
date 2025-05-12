@@ -16,7 +16,12 @@ export type RelativeDuration = {
 
 export type DurationComponents = AbsoluteDuration & RelativeDuration;
 
-export type DurationLike = number | AbsoluteDuration | Duration;
+export type DurationLike =
+  | number
+  // | string // TODO
+  | AbsoluteDuration
+  | Duration
+  | DurationComponents;
 
 export type OrdinalDate = {
   year: number;

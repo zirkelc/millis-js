@@ -512,6 +512,11 @@ Factory methods return a new `Interval` instance.
   Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').ends() // 2024-01-02T23:59:59.999Z
   ```
 
+- `reverse(): Interval`: Returns a new Interval with the start and end dates reversed
+  ```ts
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').reverse() // 2024-01-02T23:59:59.999Z/2024-01-01T00:00:00.000Z
+  ```
+
 - `days(): Array<DateTime>`: Returns an array of DateTimes for each day in the interval
   ```ts
   Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').days() // [2024-01-01T00:00:00.000Z, 2024-01-02T23:59:59.999Z]
