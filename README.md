@@ -534,6 +534,16 @@ Factory methods return a new `Interval` instance.
   Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').contains('2024-01-01T12:00:00.000Z') // true
   ```
 
+- `isPositive(): boolean`: Returns true if the interval is going forward in time (start < end)
+  ```ts
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T00:00:00.000Z').isPositive() // true
+  ```
+
+- `isNegative(): boolean`: Returns true if the interval is going backward in time (start > end)
+  ```ts
+  Interval.between('2024-01-02T00:00:00.000Z', '2024-01-01T00:00:00.000Z').isNegative() // true
+  ```
+
 ##### Formatting
 
 - `iso(): string`: Returns the ISO interval string representation

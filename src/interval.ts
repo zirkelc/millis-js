@@ -130,4 +130,18 @@ export class Interval {
   contains(dateTime: DateTimeLike): boolean {
     return this.start.isBefore(dateTime) && this.end.isAfter(dateTime);
   }
+
+  /**
+   * Returns true if the Interval start date is before the Interval end date.
+   */
+  isPositive(): boolean {
+    return this.start.isBefore(this.end);
+  }
+
+  /**
+   * Returns true if the Interval start date is after the Interval end date.
+   */
+  isNegative(): boolean {
+    return this.start.isAfter(this.end);
+  }
 }
