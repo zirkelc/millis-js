@@ -24,3 +24,7 @@ export function range(start: number, end: number): Array<number> {
 
   return Array.from({ length }, (_, i) => start + i * step);
 }
+
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
+};

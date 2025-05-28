@@ -53,6 +53,11 @@ describe('Duration', () => {
       test('should handle empty duration object', () => {
         expect(Duration.from({}).millis()).toBe(0);
       });
+
+      test('should throw error for invalid types', () => {
+        expect(() => Duration.from(null as any)).toThrow();
+        expect(() => Duration.from(undefined as any)).toThrow();
+      });
     });
 
     describe('between()', () => {

@@ -141,19 +141,21 @@ describe('DateTime', () => {
       });
 
       test('should throw error for invalid day of year', () => {
-        const result = () => DateTime.from({ year: 2024, dayOfYear: 367 });
-        expect(result).toThrow('Invalid day of year: 367 for year 2024');
+        expect(() => DateTime.from({ year: 2024, dayOfYear: 367 })).toThrow(
+          'Invalid day of year: 367 for year 2024',
+        );
       });
 
       test('should throw error for invalid date components', () => {
-        const result = () =>
-          DateTime.from({ year: 2024, month: 2, dayOfMonth: 30 });
-        expect(result).toThrow('Invalid date components');
+        expect(() =>
+          DateTime.from({ year: 2024, month: 2, dayOfMonth: 30 }),
+        ).toThrow('Invalid date components');
       });
 
-      test('should throw error for invalid object', () => {
-        const result = () => DateTime.from({} as any);
-        expect(result).toThrow();
+      test('should throw error for invalid types', () => {
+        expect(() => DateTime.from({} as any)).toThrow();
+        expect(() => DateTime.from(null as any)).toThrow();
+        expect(() => DateTime.from(undefined as any)).toThrow();
       });
     });
     // describe('format', () => {

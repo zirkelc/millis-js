@@ -1,5 +1,6 @@
 import { DateTime } from './datetime.js';
 import type { AbsoluteDuration, DateTimeLike, DurationLike } from './types.js';
+import { isObject } from './utils.js';
 
 /**
  * Duration options
@@ -47,14 +48,20 @@ export class Duration {
     if (duration instanceof Duration) return new Duration(duration.millis());
 
     // Absolute duration
-    const millis =
-      (duration.millis || 0) +
-      (duration.seconds || 0) * 1_000 +
-      (duration.minutes || 0) * 60 * 1_000 +
-      (duration.hours || 0) * 60 * 60 * 1_000 +
-      (duration.days || 0) * 24 * 60 * 60 * 1_000;
+    if (isObject(duration)) {
+      const millis =
+        (duration.millis || 0) +
+        (duration.seconds || 0) * 1_000 +
+        (duration.minutes || 0) * 60 * 1_000 +
+        (duration.hours || 0) * 60 * 60 * 1_000 +
+        (duration.days || 0) * 24 * 60 * 60 * 1_000;
 
-    return new Duration(millis);
+      return new Duration(millis);
+    }
+
+    throw new Error(`Invalid type for duration: ${typeof duration}`, {
+      cause: duration,
+    });
   }
 
   /**

@@ -7,7 +7,7 @@ import type {
   DurationLike,
   RelativeDuration,
 } from './types.js';
-import { pad, parseNumber } from './utils.js';
+import { isObject, pad, parseNumber } from './utils.js';
 
 type FormatLike = DateTimeFormat | Intl.DateTimeFormat;
 type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
@@ -81,7 +81,7 @@ export class DateTime {
     // Date instance
     if (
       dateTime instanceof Date ||
-      (typeof dateTime === 'object' && 'getTime' in dateTime)
+      (isObject(dateTime) && 'getTime' in dateTime)
     )
       return new DateTime(dateTime.getTime());
 
@@ -89,15 +89,22 @@ export class DateTime {
     if (dateTime instanceof DateTime) return new DateTime(dateTime.millis());
 
     // DateTimeComponents
-    if (typeof dateTime === 'object') {
+    if (isObject(dateTime)) {
       if ('year' in dateTime) {
         // Extract time components with defaults
-        const { hour = 0, minute = 0, second = 0, millisecond = 0 } = dateTime;
+        const {
+          year = 0,
+          hour = 0,
+          minute = 0,
+          second = 0,
+          millisecond = 0,
+        } = dateTime;
 
         if ('dayOfYear' in dateTime) {
+          const { dayOfYear } = dateTime;
           const date = new Date(
             Date.UTC(
-              dateTime.year,
+              year,
               0, // January
               1, // First day
               hour,
@@ -106,22 +113,23 @@ export class DateTime {
               millisecond,
             ),
           );
-          date.setUTCDate(dateTime.dayOfYear);
+          date.setUTCDate(dayOfYear);
 
-          if (date.getUTCFullYear() !== dateTime.year) {
+          if (date.getUTCFullYear() !== year) {
             throw new Error(
-              `Invalid day of year: ${dateTime.dayOfYear} for year ${dateTime.year}`,
+              `Invalid day of year: ${dayOfYear} for year ${year}`,
             );
           }
 
           return new DateTime(date.getTime());
         }
 
+        const { month, dayOfMonth } = dateTime;
         const date = new Date(
           Date.UTC(
-            dateTime.year,
-            dateTime.month - 1,
-            dateTime.dayOfMonth,
+            year,
+            month !== undefined ? month - 1 : undefined,
+            dayOfMonth,
             hour,
             minute,
             second,
@@ -131,9 +139,9 @@ export class DateTime {
 
         // Validate components match what was provided
         if (
-          date.getUTCFullYear() !== dateTime.year ||
-          date.getUTCMonth() !== dateTime.month - 1 ||
-          date.getUTCDate() !== dateTime.dayOfMonth
+          date.getUTCFullYear() !== year ||
+          date.getUTCMonth() !== month - 1 ||
+          date.getUTCDate() !== dayOfMonth
         ) {
           throw new Error('Invalid date components');
         }
@@ -162,7 +170,9 @@ export class DateTime {
       // }
     }
 
-    throw new Error('Invalid date time');
+    throw new Error(`Invalid type for date time: ${typeof dateTime}`, {
+      cause: dateTime,
+    });
   }
 
   /**
