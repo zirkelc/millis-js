@@ -44,6 +44,14 @@ describe('DateTime', () => {
         expect(dateTime.millis()).toBe(date.getTime());
       });
 
+      test('should create datetime from ISO format with offset', () => {
+        const isoString = '2024-01-01T00:00:00.000+01:00';
+        const date = new Date(isoString);
+        const dateTime = DateTime.from(isoString);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
       test('should create datetime from YYYY format', () => {
         const str = '2024';
         const date = new Date(str);
