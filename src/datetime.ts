@@ -288,6 +288,13 @@ export class DateTime {
   }
 
   /**
+   * Returns the millisecond of the second (0-999) for the current DateTime object.
+   */
+  millisecond(): number {
+    return this.date().getUTCMilliseconds();
+  }
+
+  /**
    * Returns a new DateTime object by adding a duration to the current DateTime object.
    */
   plus(

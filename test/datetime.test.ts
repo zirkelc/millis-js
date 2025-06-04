@@ -431,34 +431,6 @@ describe('DateTime', () => {
     });
   });
 
-  describe('millis()', () => {
-    test('should return datetime in milliseconds', () => {
-      const isoString = '2024-01-01T00:00:00.000Z';
-      const dateTime = DateTime.from(isoString);
-      const date = new Date(isoString);
-
-      expect(dateTime.millis()).toBe(date.getTime());
-    });
-  });
-
-  describe('timestamp()', () => {
-    test('should return datetime in seconds', () => {
-      const isoString = '2024-01-01T00:00:00.000Z';
-      const dateTime = DateTime.from(isoString);
-      const date = new Date(isoString);
-      expect(dateTime.timestamp()).toBe(Math.floor(date.getTime() / 1000));
-    });
-  });
-
-  describe('iso()', () => {
-    test('should return ISO string representation of datetime', () => {
-      const isoString = '2024-01-01T00:00:00.000Z';
-      const dateTime = DateTime.from(isoString);
-
-      expect(dateTime.iso()).toBe(isoString);
-    });
-  });
-
   describe('format()', () => {
     test('should format date as YYYY', () => {
       expect(DateTime.from('2024-01-01T00:00:00.000Z').format('YYYY')).toBe(
@@ -541,6 +513,34 @@ describe('DateTime', () => {
     });
   });
 
+  describe('iso()', () => {
+    test('should return ISO string representation of datetime', () => {
+      const isoString = '2024-01-01T00:00:00.000Z';
+      const dateTime = DateTime.from(isoString);
+
+      expect(dateTime.iso()).toBe(isoString);
+    });
+  });
+
+  describe('millis()', () => {
+    test('should return datetime in milliseconds', () => {
+      const isoString = '2024-01-01T00:00:00.000Z';
+      const dateTime = DateTime.from(isoString);
+      const date = new Date(isoString);
+
+      expect(dateTime.millis()).toBe(date.getTime());
+    });
+  });
+
+  describe('timestamp()', () => {
+    test('should return datetime in seconds', () => {
+      const isoString = '2024-01-01T00:00:00.000Z';
+      const dateTime = DateTime.from(isoString);
+      const date = new Date(isoString);
+      expect(dateTime.timestamp()).toBe(Math.floor(date.getTime() / 1000));
+    });
+  });
+
   describe('date()', () => {
     test('should return JavaScript Date object', () => {
       const isoString = '2024-01-01T00:00:00.000Z';
@@ -549,6 +549,15 @@ describe('DateTime', () => {
 
       expect(dateTime.date()).toBeInstanceOf(Date);
       expect(dateTime.date()).toEqual(date);
+    });
+  });
+
+  describe('year()', () => {
+    test('should return correct year for various dates', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').year()).toBe(2024); // New year
+      expect(DateTime.from('2023-12-31T23:59:59.999Z').year()).toBe(2023); // End of year
+      expect(DateTime.from('1999-12-31T00:00:00.000Z').year()).toBe(1999); // End of century
+      expect(DateTime.from('2000-01-01T00:00:00.000Z').year()).toBe(2000); // Start of millennium
     });
   });
 
@@ -562,12 +571,18 @@ describe('DateTime', () => {
     });
   });
 
-  describe('year()', () => {
-    test('should return correct year for various dates', () => {
-      expect(DateTime.from('2024-01-01T00:00:00.000Z').year()).toBe(2024); // New year
-      expect(DateTime.from('2023-12-31T23:59:59.999Z').year()).toBe(2023); // End of year
-      expect(DateTime.from('1999-12-31T00:00:00.000Z').year()).toBe(1999); // End of century
-      expect(DateTime.from('2000-01-01T00:00:00.000Z').year()).toBe(2000); // Start of millennium
+  describe('dayOfMonth()', () => {
+    test('should return correct day of month for various dates', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').dayOfMonth()).toBe(1); // First day of month
+      expect(DateTime.from('2024-02-29T00:00:00.000Z').dayOfMonth()).toBe(29); // Leap year day
+      expect(DateTime.from('2024-12-31T00:00:00.000Z').dayOfMonth()).toBe(31); // Last day of month
+    });
+  });
+
+  describe('month()', () => {
+    test('should return correct month for various dates', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').month()).toBe(1); // January
+      expect(DateTime.from('2024-12-31T00:00:00.000Z').month()).toBe(12); // December
     });
   });
 
@@ -577,6 +592,28 @@ describe('DateTime', () => {
       expect(DateTime.from('2024-01-01T01:00:00.000Z').hour()).toBe(1); // 1 AM
       expect(DateTime.from('2024-01-01T12:00:00.000Z').hour()).toBe(12); // Noon
       expect(DateTime.from('2024-01-01T23:00:00.000Z').hour()).toBe(23); // 11 PM
+    });
+  });
+
+  describe('minute()', () => {
+    test('should return correct minute of hour for various times', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').minute()).toBe(0); // Midnight (00:00)
+      expect(DateTime.from('2024-01-01T00:01:00.000Z').minute()).toBe(1); // 1 minute past midnight
+      expect(DateTime.from('2024-01-01T00:59:00.000Z').minute()).toBe(59); // 59 minutes past midnight
+    });
+  });
+
+  describe('second()', () => {
+    test('should return correct second of minute for various times', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').second()).toBe(0); // Midnight (00:00:00)
+      expect(DateTime.from('2024-01-01T00:00:01.000Z').second()).toBe(1); // 1 second past midnight
+    });
+  });
+
+  describe('millisecond()', () => {
+    test('should return correct millisecond of second for various times', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').millisecond()).toBe(0); // Midnight (00:00:00.000)
+      expect(DateTime.from('2024-01-01T00:00:00.001Z').millisecond()).toBe(1); // 1 millisecond past midnight
     });
   });
 
