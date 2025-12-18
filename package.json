@@ -1,6 +1,6 @@
 {
   "name": "millis-js",
-  "version": "0.11.0",
+  "version": "1.0.0",
   "description": "A tiny and dependency-free datetime library with a chainable and immutable API",
   "packageManager": "pnpm@9.0.0",
   "main": "./dist/index.cjs",
