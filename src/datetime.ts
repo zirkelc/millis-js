@@ -7,7 +7,7 @@ import type {
   DurationLike,
   RelativeDuration,
 } from './types.js';
-import { isObject, pad, parseNumber } from './utils.js';
+import { isDateTimeFormat, isObject, pad, parseNumber } from './utils.js';
 
 type FormatLike = DateTimeFormat | Intl.DateTimeFormat;
 type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
@@ -186,8 +186,7 @@ export class DateTime {
    * Formats the DateTime according to the specified format
    */
   format(format: FormatLike): string {
-    if (format instanceof Intl.DateTimeFormat)
-      return format.format(this.date());
+    if (isDateTimeFormat(format)) return format.format(this.date());
 
     switch (format) {
       case 'YYYY':

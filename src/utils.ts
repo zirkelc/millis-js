@@ -28,3 +28,15 @@ export function range(start: number, end: number): Array<number> {
 export const isObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null;
 };
+
+/**
+ * Checks if a value is an Intl.DateTimeFormat instance.
+ */
+export const isDateTimeFormat = (
+  value: unknown,
+): value is Intl.DateTimeFormat => {
+  return (
+    value instanceof Intl.DateTimeFormat ||
+    (isObject(value) && 'format' in value && typeof value.format === 'function')
+  );
+};
