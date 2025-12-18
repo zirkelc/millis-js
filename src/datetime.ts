@@ -267,6 +267,14 @@ export class DateTime {
   }
 
   /**
+   * Returns the day of the week (1-7, Monday=1, Sunday=7) for the current DateTime object.
+   */
+  dayOfWeek(): number {
+    const day = this.date().getUTCDay();
+    return day === 0 ? 7 : day;
+  }
+
+  /**
    * Returns the hour of the day (0-23) for the current DateTime object.
    */
   hour(): number {

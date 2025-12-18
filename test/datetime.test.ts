@@ -594,6 +594,23 @@ describe('DateTime', () => {
     });
   });
 
+  describe('dayOfWeek()', () => {
+    test('should return correct day of week (1=Monday, 7=Sunday)', () => {
+      expect(DateTime.from('2024-01-01T00:00:00.000Z').dayOfWeek()).toBe(1); // Monday
+      expect(DateTime.from('2024-01-02T00:00:00.000Z').dayOfWeek()).toBe(2); // Tuesday
+      expect(DateTime.from('2024-01-03T00:00:00.000Z').dayOfWeek()).toBe(3); // Wednesday
+      expect(DateTime.from('2024-01-04T00:00:00.000Z').dayOfWeek()).toBe(4); // Thursday
+      expect(DateTime.from('2024-01-05T00:00:00.000Z').dayOfWeek()).toBe(5); // Friday
+      expect(DateTime.from('2024-01-06T00:00:00.000Z').dayOfWeek()).toBe(6); // Saturday
+      expect(DateTime.from('2024-01-07T00:00:00.000Z').dayOfWeek()).toBe(7); // Sunday
+    });
+
+    test('should return correct day of week at different times', () => {
+      expect(DateTime.from('2024-01-01T12:30:00.000Z').dayOfWeek()).toBe(1); // Monday at noon
+      expect(DateTime.from('2024-01-07T23:59:59.999Z').dayOfWeek()).toBe(7); // Sunday end of day
+    });
+  });
+
   describe('hour()', () => {
     test('should return correct hour of day for various times', () => {
       expect(DateTime.from('2024-01-01T00:00:00.000Z').hour()).toBe(0); // Midnight (00:00)
