@@ -1,5 +1,5 @@
-import GithubActionsReporter from 'vitest-github-actions-reporter';
 import { coverageConfigDefaults, defineConfig } from 'vitest/config';
+import GithubActionsReporter from 'vitest-github-actions-reporter';
 
 export default defineConfig({
   test: {
