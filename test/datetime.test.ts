@@ -76,6 +76,83 @@ describe('DateTime', () => {
         expect(dateTime.millis()).toBe(date.getTime());
       });
 
+      test('should create datetime from YYYY-MM-DDTHH format', () => {
+        const str = '2024-01-01T12';
+        const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
+        const dateTime = DateTime.from(str);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should create datetime from YYYY-MM-DDTHH:mm format', () => {
+        const str = '2024-01-01T12:30';
+        const date = new Date(Date.UTC(2024, 0, 1, 12, 30, 0));
+        const dateTime = DateTime.from(str);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should create datetime from YYYY-MM-DDTHH:mm:ss format', () => {
+        const str = '2024-01-01T12:30:45';
+        const date = new Date(Date.UTC(2024, 0, 1, 12, 30, 45));
+        const dateTime = DateTime.from(str);
+
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should interpret partial datetime without timezone as UTC', () => {
+        expect(DateTime.from('2024-06-15T08:09:10').iso()).toBe(
+          '2024-06-15T08:09:10.000Z',
+        );
+      });
+
+      test('should create datetime from YYYY-MM-DDTHH:mm:ss.SSS format', () => {
+        // Arrange
+        const str = '2024-01-01T12:30:45.789';
+        const date = new Date(Date.UTC(2024, 0, 1, 12, 30, 45, 789));
+
+        // Act
+        const dateTime = DateTime.from(str);
+
+        // Assert
+        expect(dateTime.millis()).toBe(date.getTime());
+      });
+
+      test('should interpret datetime with milliseconds but without timezone as UTC', () => {
+        // Arrange
+        const str = '2024-06-15T08:09:10.123';
+
+        // Act
+        const dateTime = DateTime.from(str);
+
+        // Assert
+        expect(dateTime.iso()).toBe('2024-06-15T08:09:10.123Z');
+      });
+
+      test('should scale fractional seconds shorter than 3 digits to milliseconds', () => {
+        // Arrange
+        const str = '2024-06-15T08:09:10.5';
+
+        // Act
+        const dateTime = DateTime.from(str);
+
+        // Assert
+        expect(dateTime.millisecond()).toBe(500);
+      });
+
+      test('should round-trip YYYY-MM-DDTHH:mm:ss.SSS format through from()', () => {
+        // Arrange
+        const original = DateTime.from('2024-01-01T12:30:45.789Z');
+
+        // Act
+        const roundTripped = DateTime.from(
+          original.format('YYYY-MM-DDTHH:mm:ss.SSS'),
+        );
+
+        // Assert
+        expect(roundTripped.millis()).toBe(original.millis());
+      });
+
       test('should throw error for invalid format', () => {
         const result = () => DateTime.from('20240229');
         expect(result).toThrow();
@@ -483,6 +560,54 @@ describe('DateTime', () => {
       expect(DateTime.from('2024-01-01T12:34:56.789Z').format('HH:mm:ss')).toBe(
         '12:34:56',
       );
+    });
+
+    test('should format datetime as YYYY-MM-DDTHH', () => {
+      expect(
+        DateTime.from('2024-01-01T00:00:00.000Z').format('YYYY-MM-DDTHH'),
+      ).toBe('2024-01-01T00');
+      expect(
+        DateTime.from('2024-02-29T12:34:56.789Z').format('YYYY-MM-DDTHH'),
+      ).toBe('2024-02-29T12');
+    });
+
+    test('should format datetime as YYYY-MM-DDTHH:mm', () => {
+      expect(
+        DateTime.from('2024-01-01T00:00:00.000Z').format('YYYY-MM-DDTHH:mm'),
+      ).toBe('2024-01-01T00:00');
+      expect(
+        DateTime.from('2024-02-29T12:34:56.789Z').format('YYYY-MM-DDTHH:mm'),
+      ).toBe('2024-02-29T12:34');
+    });
+
+    test('should format datetime as YYYY-MM-DDTHH:mm:ss', () => {
+      expect(
+        DateTime.from('2024-01-01T00:00:00.000Z').format('YYYY-MM-DDTHH:mm:ss'),
+      ).toBe('2024-01-01T00:00:00');
+      expect(
+        DateTime.from('2024-12-31T23:59:59.999Z').format('YYYY-MM-DDTHH:mm:ss'),
+      ).toBe('2024-12-31T23:59:59');
+      expect(
+        DateTime.from('2024-02-29T12:34:56.789Z').format('YYYY-MM-DDTHH:mm:ss'),
+      ).toBe('2024-02-29T12:34:56');
+    });
+
+    test('should format datetime as YYYY-MM-DDTHH:mm:ss.SSS', () => {
+      expect(
+        DateTime.from('2024-01-01T00:00:00.000Z').format(
+          'YYYY-MM-DDTHH:mm:ss.SSS',
+        ),
+      ).toBe('2024-01-01T00:00:00.000');
+      expect(
+        DateTime.from('2024-12-31T23:59:59.999Z').format(
+          'YYYY-MM-DDTHH:mm:ss.SSS',
+        ),
+      ).toBe('2024-12-31T23:59:59.999');
+      expect(
+        DateTime.from('2024-02-29T12:34:56.789Z').format(
+          'YYYY-MM-DDTHH:mm:ss.SSS',
+        ),
+      ).toBe('2024-02-29T12:34:56.789');
     });
 
     test('should format using Intl.DateTimeFormat', () => {

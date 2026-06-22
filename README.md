@@ -10,7 +10,7 @@ A tiny and dependency-free datetime library with a chainable and immutable API.
 
 - 🔄 **Immutable operations** - All operations return new instances, preventing accidental state mutations
 - 🔗 **Chainable API** - Fluent interface for composing multiple operations
-- 📅 **UTC-based** - Works with UTC milliseconds internally, avoiding timezone complexities
+- 📅 **UTC-based** - Works with UTC milliseconds internally; strings without a timezone are parsed as UTC, avoiding timezone complexities
 - ⚡ **Zero dependencies** - Tiny footprint, built without any external dependencies
 - 🎯 **Type-safe** - Written in TypeScript with full type definitions
 
@@ -47,6 +47,12 @@ Factory methods return a new `DateTime` instance.
   DateTime.from('2024-01-01'); // YYYY-MM-DD
   DateTime.from('2024-001'); // YYYY-DDD
 
+  // ISO datetime without a timezone is interpreted as UTC
+  DateTime.from('2024-01-01T12'); // YYYY-MM-DDTHH
+  DateTime.from('2024-01-01T12:30'); // YYYY-MM-DDTHH:mm
+  DateTime.from('2024-01-01T12:30:45'); // YYYY-MM-DDTHH:mm:ss
+  DateTime.from('2024-01-01T12:30:45.000'); // YYYY-MM-DDTHH:mm:ss.SSS
+
   // From Date object
   DateTime.from(new Date());
 
@@ -71,6 +77,12 @@ Factory methods return a new `DateTime` instance.
     hour: 12        // optional, etc.
   });
   ```
+
+  > [!NOTE]
+  > **Strings without a timezone are treated as UTC.** Any date or datetime string
+  > that omits an explicit `Z` or `±HH:mm` offset (e.g. `2024-01-01`,
+  > `2024-01-01T12:30`, `2024-01-01T12:30:45.000`) is interpreted as UTC, not local
+  > time. Strings carrying an offset are honored as written.
 
 - `DateTime.until(dateTime: DateTimeLike): Interval`: Returns an Interval from the current time to a given date time
   ```typescript
@@ -302,6 +314,10 @@ DateTime accepts **both** absolute (days, hours, minutes, seconds, milliseconds)
   dateTime.format('YYYY-DDD');     // "2024-001"
   dateTime.format('YYYY-MM-DD');   // "2024-01-01"
   dateTime.format('HH:mm:ss');     // "12:30:45"
+  dateTime.format('YYYY-MM-DDTHH');         // "2024-01-01T12"
+  dateTime.format('YYYY-MM-DDTHH:mm');      // "2024-01-01T12:30"
+  dateTime.format('YYYY-MM-DDTHH:mm:ss');   // "2024-01-01T12:30:45"
+  dateTime.format('YYYY-MM-DDTHH:mm:ss.SSS'); // "2024-01-01T12:30:45.000"
 
   // Using Intl.DateTimeFormat
   dateTime.format(new Intl.DateTimeFormat('en-US')) // "1/1/2024, 12:30:45 AM"

@@ -39,7 +39,15 @@ export type TimeComponents = {
   millisecond: number;
 };
 
-export type DateTimeFormat = 'YYYY' | 'YYYY-MM-DD' | 'YYYY-DDD' | 'HH:mm:ss';
+export type DateTimeFormat =
+  | 'YYYY'
+  | 'YYYY-MM-DD'
+  | 'YYYY-DDD'
+  | 'HH:mm:ss'
+  | 'YYYY-MM-DDTHH'
+  | 'YYYY-MM-DDTHH:mm'
+  | 'YYYY-MM-DDTHH:mm:ss'
+  | 'YYYY-MM-DDTHH:mm:ss.SSS';
 
 // export type DateTimeFormats = {
 //   [K in DateTimeFormat]: { [P in K]: string } & {

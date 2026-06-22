@@ -15,6 +15,15 @@ type TimeUnit = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year';
 const YYYY_REGEX = /^\d{4}$/;
 const YYYY_MM_DD_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const YYYY_DDD_REGEX = /^\d{4}-\d{3}$/;
+/**
+ * Matches an ISO datetime without a timezone, where minutes, seconds, and
+ * fractional seconds are all optional: `YYYY-MM-DDTHH`, `YYYY-MM-DDTHH:mm`,
+ * `YYYY-MM-DDTHH:mm:ss`, `YYYY-MM-DDTHH:mm:ss.SSS`. Such strings are interpreted
+ * as UTC, consistent with the date-only forms above. Strings carrying an
+ * explicit `Z` or `±HH:mm` offset do not match and fall back to `Date.parse`.
+ */
+const DATETIME_NO_TZ_REGEX =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(?::(\d{2})(?::(\d{2})(?:\.(\d+))?)?)?$/;
 
 /**
  * A `DateTime` represents a point in time.
@@ -72,9 +81,30 @@ export class DateTime {
             return DateTime.from({ year, dayOfYear });
           }
           break;
-        default:
-          // ISO
+        default: {
+          // ISO datetime without timezone is interpreted as UTC
+          const match = DATETIME_NO_TZ_REGEX.exec(str);
+          if (match) {
+            const [, year, month, dayOfMonth, hour, minute, second, fraction] =
+              match;
+            return DateTime.from({
+              year: parseNumber(year),
+              month: parseNumber(month),
+              dayOfMonth: parseNumber(dayOfMonth),
+              hour: parseNumber(hour),
+              minute: minute !== undefined ? parseNumber(minute) : 0,
+              second: second !== undefined ? parseNumber(second) : 0,
+              // Pad/truncate fractional seconds to 3 digits (milliseconds)
+              millisecond:
+                fraction !== undefined
+                  ? parseNumber(fraction.padEnd(3, '0').slice(0, 3))
+                  : 0,
+            });
+          }
+
+          // ISO with explicit timezone
           return new DateTime(Date.parse(dateTime));
+        }
       }
     }
 
@@ -197,6 +227,14 @@ export class DateTime {
         return `${pad(this.year(), 4)}-${pad(this.month(), 2)}-${pad(this.dayOfMonth(), 2)}`;
       case 'HH:mm:ss':
         return `${pad(this.hour(), 2)}:${pad(this.minute(), 2)}:${pad(this.second(), 2)}`;
+      case 'YYYY-MM-DDTHH':
+        return `${pad(this.year(), 4)}-${pad(this.month(), 2)}-${pad(this.dayOfMonth(), 2)}T${pad(this.hour(), 2)}`;
+      case 'YYYY-MM-DDTHH:mm':
+        return `${pad(this.year(), 4)}-${pad(this.month(), 2)}-${pad(this.dayOfMonth(), 2)}T${pad(this.hour(), 2)}:${pad(this.minute(), 2)}`;
+      case 'YYYY-MM-DDTHH:mm:ss':
+        return `${pad(this.year(), 4)}-${pad(this.month(), 2)}-${pad(this.dayOfMonth(), 2)}T${pad(this.hour(), 2)}:${pad(this.minute(), 2)}:${pad(this.second(), 2)}`;
+      case 'YYYY-MM-DDTHH:mm:ss.SSS':
+        return `${pad(this.year(), 4)}-${pad(this.month(), 2)}-${pad(this.dayOfMonth(), 2)}T${pad(this.hour(), 2)}:${pad(this.minute(), 2)}:${pad(this.second(), 2)}.${pad(this.millisecond(), 3)}`;
     }
     format satisfies never;
 
