@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/zirkelc/millis-js/compare/v1.0.0...v1.1.0) (2026-06-22)
+
+
+### Features
+
+* add datetime formats and parse no-timezone ISO strings ([2017b98](https://github.com/zirkelc/millis-js/commit/2017b988eaefa04e887174e88895db845879461c))
+
 ## 1.0.0 (2025-12-18)
 
 
