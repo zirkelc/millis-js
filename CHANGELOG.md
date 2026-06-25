@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/zirkelc/millis-js/compare/v1.1.0...v1.2.0) (2026-06-25)
+
+
+### Features
+
+* add Interval.hours() factory and instance method ([7ae9b5b](https://github.com/zirkelc/millis-js/commit/7ae9b5b2faa5f8a0ba51a923a6bdcb5c3391ce05))
+
 ## [1.1.0](https://github.com/zirkelc/millis-js/compare/v1.0.0...v1.1.0) (2026-06-22)
 
 
