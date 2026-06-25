@@ -66,6 +66,50 @@ describe('Interval', () => {
         expect(days[6].iso()).toBe(sevenDaysAgo.plus({ days: 1 }).iso());
       });
     });
+
+    describe('hours()', () => {
+      test('should create interval for the next hours if hours is positive', () => {
+        // Arrange
+        const now = DateTime.now();
+        const nextHour = now.plus({ hours: 1 });
+        const sixHoursFromNow = now.plus({ hours: 6 });
+
+        // Act
+        const next6hours = Interval.hours(6);
+
+        // Assert
+        expect(next6hours.starts().iso()).toBe(now.iso());
+        expect(next6hours.ends().iso()).toBe(sixHoursFromNow.iso());
+        expect(next6hours.millis()).toBe(6 * 60 * 60 * 1_000);
+
+        const hours = next6hours.hours();
+        expect(hours.length).toBe(6);
+        expect(hours[0].iso()).toBe(now.iso());
+        expect(hours[1].iso()).toBe(nextHour.iso());
+        expect(hours[5].iso()).toBe(sixHoursFromNow.minus({ hours: 1 }).iso());
+      });
+
+      test('should create interval for the past hours if hours is negative', () => {
+        // Arrange
+        const now = DateTime.now();
+        const previousHour = now.minus({ hours: 1 });
+        const sixHoursAgo = now.minus({ hours: 6 });
+
+        // Act
+        const last6hours = Interval.hours(-6);
+
+        // Assert
+        expect(last6hours.starts().iso()).toBe(now.iso());
+        expect(last6hours.ends().iso()).toBe(sixHoursAgo.iso());
+        expect(last6hours.millis()).toBe(-6 * 60 * 60 * 1_000);
+
+        const hours = last6hours.hours();
+        expect(hours.length).toBe(6);
+        expect(hours[0].iso()).toBe(now.iso());
+        expect(hours[1].iso()).toBe(previousHour.iso());
+        expect(hours[5].iso()).toBe(sixHoursAgo.plus({ hours: 1 }).iso());
+      });
+    });
   });
 
   describe('instance', () => {
@@ -131,6 +175,70 @@ describe('Interval', () => {
 
         // Assert
         expect(duration.hours()).toBe(36.5125);
+      });
+    });
+
+    describe('hours()', () => {
+      test('should return array of hours for same hour interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-01T00:59:59.999Z',
+        );
+
+        // Act
+        const hours = interval.hours();
+
+        // Assert
+        expect(hours.length).toBe(1);
+        expect(hours[0].hour()).toBe(0);
+      });
+
+      test('should return array of hours for one hour interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-01T01:00:00.000Z',
+        );
+
+        // Act
+        const hours = interval.hours();
+
+        // Assert
+        expect(hours.length).toBe(1);
+        expect(hours[0].hour()).toBe(0);
+      });
+
+      test('should return array of hours for two hour interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-01T01:59:59.999Z',
+        );
+
+        // Act
+        const hours = interval.hours();
+
+        // Assert
+        expect(hours.length).toBe(2);
+        expect(hours[0].hour()).toBe(0);
+        expect(hours[1].hour()).toBe(1);
+      });
+
+      test('should return array of hours for a full day interval', () => {
+        // Arrange
+        const interval = Interval.between(
+          '2024-01-01T00:00:00.000Z',
+          '2024-01-01T23:59:59.999Z',
+        );
+
+        // Act
+        const hours = interval.hours();
+
+        // Assert
+        expect(hours.length).toBe(24);
+        expect(hours[0].hour()).toBe(0);
+        expect(hours[23].hour()).toBe(23);
       });
     });
 

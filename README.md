@@ -509,6 +509,15 @@ Factory methods return a new `Interval` instance.
   Interval.days(-7) // 2024-01-01T00:00:00.000Z/2023-12-25T00:00:00.000Z
   ```
 
+- `Interval.hours(hours: number): Interval`: Returns an Interval spanning the specified number of hours from now
+  ```ts
+  // Creates interval from now to 6 hours in future
+  Interval.hours(6) // 2024-01-01T00:00:00.000Z/2024-01-01T06:00:00.000Z
+
+  // Creates interval from now to 6 hours in past
+  Interval.hours(-6) // 2024-01-01T00:00:00.000Z/2023-12-31T18:00:00.000Z
+  ```
+
 #### Instance methods
 
 ##### Conversion
@@ -531,6 +540,11 @@ Factory methods return a new `Interval` instance.
 - `reverse(): Interval`: Returns a new Interval with the start and end dates reversed
   ```ts
   Interval.between('2024-01-01T00:00:00.000Z', '2024-01-02T23:59:59.999Z').reverse() // 2024-01-02T23:59:59.999Z/2024-01-01T00:00:00.000Z
+  ```
+
+- `hours(): Array<DateTime>`: Returns an array of DateTimes for each hour in the interval
+  ```ts
+  Interval.between('2024-01-01T00:00:00.000Z', '2024-01-01T01:59:59.999Z').hours() // [2024-01-01T00:00:00.000Z, 2024-01-01T01:00:00.000Z]
   ```
 
 - `days(): Array<DateTime>`: Returns an array of DateTimes for each day in the interval

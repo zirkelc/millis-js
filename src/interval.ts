@@ -34,6 +34,17 @@ export class Interval {
   }
 
   /**
+   * Creates a new Interval starting from now and extending for the specified number of hours
+   */
+  static hours(hours: number) {
+    const now = DateTime.now();
+    const start = now;
+    const end = now.plus({ hours });
+
+    return new Interval(start, end);
+  }
+
+  /**
    * Returns the number of milliseconds between the start and end of the interval.
    */
   millis(): number {
@@ -77,6 +88,29 @@ export class Interval {
 
   toString(): string {
     return this.iso();
+  }
+
+  /**
+   * Returns an array of DateTime objects for each hour in the interval, going from start to end.
+   * The hour of the end date is only included if it is not exactly at the start of an hour.
+   *
+   * @example
+   * - `2024-01-01T00:00:00.000Z` to `2024-01-01T01:00:00.000Z` will include only `00:00`
+   * - `2024-01-01T00:00:00.000Z` to `2024-01-01T01:59:59.999Z` will include both `00:00` and `01:00`
+   */
+  hours(): Array<DateTime> {
+    const startDate = this.start;
+
+    // If end time is exactly at the start of an hour, don't include that hour
+    const endDate = this.end.isStartOfHour()
+      ? this.end.minus({ millis: 1 })
+      : this.end;
+
+    const hours = Duration.between(startDate, endDate).hours({
+      round: 'down',
+    });
+
+    return range(0, hours + 1).map((hour) => startDate.plus({ hours: hour }));
   }
 
   /**
